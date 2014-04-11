@@ -1,12 +1,7 @@
-Tomighty is...
+DialyWork
 ==============
 
-A desktop timer app that helps you apply the Pomodoro Technique.
-It's written in Java and designed to be simple, easy to use and unintrusive.
-
-Know more about it at [www.tomighty.org](http://www.tomighty.org)
-
-The source code of the Mac version is at https://github.com/ccidral/tomighty-osx
+This Tomighty fork is intended to help you perform tasks daily for fixed amount of time.
 
 Building
 --------
