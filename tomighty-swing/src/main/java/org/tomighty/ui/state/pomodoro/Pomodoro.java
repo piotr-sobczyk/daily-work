@@ -16,10 +16,14 @@
 
 package org.tomighty.ui.state.pomodoro;
 
+import java.awt.event.ActionEvent;
+
 import javax.inject.Inject;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.tomighty.Phase;
+import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.config.Options;
 import org.tomighty.time.Time;
 import org.tomighty.ui.UiState;
@@ -31,25 +35,25 @@ import org.tomighty.ui.theme.Colors;
 import org.tomighty.ui.theme.colors.Red;
 
 public class Pomodoro extends TimerSupport {
-	
-	@Inject
-    private Options options;
-	
-	@Override
-	public Colors colors() {
-		return Red.instance();
-	}
-	
-	@Override
-	protected String title() {
-		return messages.get("Pomodoro");
-	}
 
-	@Override
-	protected Time initialTime() {
-		int minutes = options.time().pomodoro();
-		return new Time(minutes);
-	}
+    @Inject
+    private Options options;
+
+    @Override
+    public Colors colors() {
+        return Red.instance();
+    }
+
+    @Override
+    protected String title() {
+        return messages.get("Pomodoro");
+    }
+
+    @Override
+    protected Time initialTime() {
+        int minutes = options.time().pomodoro();
+        return new Time(minutes);
+    }
 
     @Override
     protected Phase phase() {
@@ -57,27 +61,47 @@ public class Pomodoro extends TimerSupport {
     }
 
     @Override
-	protected boolean displaysGauge() {
-		return true;
-	}
+    protected boolean displaysGauge() {
+        return true;
+    }
 
-	@Override
-	protected Class<? extends UiState> finishedState() {
-		return PomodoroFinished.class;
-	}
+    @Override
+    protected Class<? extends UiState> finishedState() {
+        return PomodoroFinished.class;
+    }
 
-	@Override
-	protected Class<? extends UiState> interruptedState() {
-		return PomodoroInterrupted.class;
-	}
+    @Override
+    protected Class<? extends UiState> interruptedState() {
+        return PomodoroInterrupted.class;
+    }
 
-	@Override
-	protected Action[] secondaryActions() {
-		return new Action[] {
-			new ToState(messages.get("Restart pomodoro"), Pomodoro.class),
-			new ToState(messages.get("Short break"), ShortBreak.class),
-			new ToState(messages.get("Long break"), LongBreak.class)
-		};
-	}
-	
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
+                new Pause()
+        };
+    }
+
+    @Override
+    protected Action[] secondaryActions() {
+        return new Action[] {
+                new ToState(messages.get("Restart pomodoro"), Pomodoro.class),
+                new ToState(messages.get("Short break"), ShortBreak.class),
+                new ToState(messages.get("Long break"), LongBreak.class)
+        };
+    }
+
+    @SuppressWarnings("serial")
+    private class Pause extends AbstractAction {
+        public Pause() {
+            super("Pause");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            timer.pause();
+            bus.publish(new ChangeUiState(PomodoroPaused.class));
+        }
+    }
+
 }

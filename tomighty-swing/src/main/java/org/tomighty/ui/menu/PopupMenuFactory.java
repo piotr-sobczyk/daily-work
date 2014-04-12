@@ -30,7 +30,8 @@ public class PopupMenuFactory {
 
         menu.add(menuItem("Options", injector.getInstance(ShowOptions.class)));
         menu.add(pluginsMenu);
-        menu.add(menuItem("About", injector.getInstance(ShowAboutWindow.class)));
+        //TODO: prepare new About page
+        //menu.add(menuItem("About", injector.getInstance(ShowAboutWindow.class)));
         menu.addSeparator();
         menu.add(menuItem("Close", new Exit()));
 

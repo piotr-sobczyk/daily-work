@@ -16,19 +16,45 @@
 
 package org.tomighty.ui.state.breaks;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+
+import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.state.TimerSupport;
 
 public abstract class Break extends TimerSupport {
 
-	@Override
-	protected Class<? extends UiState> finishedState() {
-		return BreakFinished.class;
-	}
-	
-	@Override
-	protected Class<? extends UiState> interruptedState() {
-		return BreakInterrupted.class;
-	}
-	
+    @Override
+    protected Class<? extends UiState> finishedState() {
+        return BreakFinished.class;
+    }
+
+    @Override
+    protected Class<? extends UiState> interruptedState() {
+        return BreakInterrupted.class;
+    }
+
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
+                new Interrupt()
+        };
+    }
+
+    @SuppressWarnings("serial")
+    private class Interrupt extends AbstractAction {
+        public Interrupt() {
+            super(messages.get("Interrupt"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            timer.interrupt();
+            bus.publish(new ChangeUiState(interruptedState()));
+        }
+    }
+
 }

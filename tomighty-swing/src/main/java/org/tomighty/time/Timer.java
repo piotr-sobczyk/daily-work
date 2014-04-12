@@ -27,34 +27,53 @@ import org.tomighty.bus.messages.timer.TimerTick;
 
 import javax.inject.Inject;
 
-public class DefaultTimer implements Timer {
+public class Timer {
 
-	private static final int ONE_SECOND = 1000;
+    private static final int ONE_SECOND = 1000;
 
     private TimerState state;
     private java.util.Timer timer;
+
     private final Bus bus;
 
     @Inject
-    public DefaultTimer(Bus bus) {
+    public Timer(Bus bus) {
         this.bus = bus;
     }
 
-    @Override
-    public void start(Time time, Phase phase) {
-        interrupt();
-        state = new TimerState(time, phase);
-        scheduleTimer();
-        bus.publish(new TimerStarted(time, phase));
+    public Time getTime() {
+        return state.getTime();
     }
 
-    @Override
-	public void interrupt() {
-		if(timer != null) {
-			timer.cancel();
-			bus.publish(new TimerInterrupted(state.getTime(), state.getPhase()));
-		}
-	}
+    public boolean isInProgress() {
+        return state != null && !state.isEnded();
+    }
+
+    public void start(Time initialTime, Phase phase) {
+        state = new TimerState(initialTime, phase);
+        scheduleTimer();
+        bus.publish(new TimerStarted(initialTime, phase));
+    }
+
+    private void finish() {
+        timer.cancel();
+        state.markEnded();
+        bus.publish(new TimerFinished(state.getPhase()));
+    }
+
+    public void interrupt() {
+        timer.cancel();
+        state.markEnded();
+        bus.publish(new TimerInterrupted(state.getTime(), state.getPhase()));
+    }
+
+    public void pause() {
+        timer.cancel();
+    }
+
+    public void resume() {
+        scheduleTimer();
+    }
 
     private void scheduleTimer() {
         timer = new java.util.Timer(getClass().getSimpleName());
@@ -68,11 +87,6 @@ public class DefaultTimer implements Timer {
 
         if(state.getTime().isZero())
             finish();
-    }
-
-    private void finish() {
-        timer.cancel();
-        bus.publish(new TimerFinished(state.getPhase()));
     }
 
     private class Tick extends TimerTask {

@@ -17,6 +17,7 @@
 package org.tomighty.inject;
 
 import com.google.inject.AbstractModule;
+
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.DefaultBus;
 import org.tomighty.config.Configuration;
@@ -31,7 +32,6 @@ import org.tomighty.plugin.impl.DefaultPluginPackFactory;
 import org.tomighty.resources.cache.Caches;
 import org.tomighty.sound.SoundPlayer;
 import org.tomighty.sound.Sounds;
-import org.tomighty.time.DefaultTimer;
 import org.tomighty.time.Timer;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.swing.gauge.Gauge;
@@ -45,8 +45,8 @@ public class TomightyModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Bus.class).to(DefaultBus.class).in(SINGLETON);
-        bind(Timer.class).to(DefaultTimer.class).in(SINGLETON);
 
+        bind(Timer.class).in(SINGLETON);
         bind(Tray.class).to(AwtTray.class).in(SINGLETON);
         bind(TrayManager.class).in(SINGLETON);
         bind(Window.class).in(SINGLETON);

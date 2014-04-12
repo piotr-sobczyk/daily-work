@@ -19,12 +19,9 @@ package org.tomighty.ui.state;
 import static javax.swing.SwingUtilities.invokeLater;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JLabel;
 
 import org.tomighty.Phase;
@@ -40,9 +37,11 @@ import org.tomighty.ui.UiState;
 
 public abstract class TimerSupport extends UiStateSupport {
 
-	@Inject private Timer timer;
-	@Inject private Sounds sounds;
-	@Inject private SoundPlayer soundPlayer;
+    @Inject
+    protected Timer timer;
+    @Inject
+    private Sounds sounds;
+    @Inject private SoundPlayer soundPlayer;
 	private JLabel remainingTime;
 	private UpdateTime updateTime = new UpdateTime();
 	private EndTimer endTimer = new EndTimer();
@@ -66,11 +65,17 @@ public abstract class TimerSupport extends UiStateSupport {
 	
 	@Override
 	public void afterRendering() {
-		Time time = initialTime();
-		remainingTime.setText(time.toString());
-		timer.start(time, phase());
-		soundPlayer.play(sounds.wind()).playRepeatedly(sounds.tictac());
-	}
+        if (timer.isInProgress()) {
+            timer.resume();
+            remainingTime.setText(timer.getTime().toString());
+        } else {
+            Time time = initialTime();
+            timer.start(time, phase());
+            remainingTime.setText(time.toString());
+        }
+
+        soundPlayer.play(sounds.wind()).playRepeatedly(sounds.tictac());
+    }
 
     @Override
 	public void beforeDetaching() {
@@ -79,26 +84,6 @@ public abstract class TimerSupport extends UiStateSupport {
 		bus.unsubscribe(endTimer, TimerFinished.class);
 	}
 
-	@Override
-	protected Action[] primaryActions() {
-		return new Action[] {
-			new Interrupt()
-		};
-	}
-
-	@SuppressWarnings("serial")
-	private class Interrupt extends AbstractAction {
-		public Interrupt() {
-			super(messages.get("Interrupt"));
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			timer.interrupt();
-			bus.publish(new ChangeUiState(interruptedState()));
-		}
-	}
-	
 	private class UpdateTime implements Subscriber<TimerTick> {
 		@Override
 		public void receive(TimerTick tick) {

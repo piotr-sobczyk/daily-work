@@ -21,7 +21,7 @@ public class TimerTest {
     @Before
     public void setUp() throws Exception {
         bus = new MockBus();
-        timer = new DefaultTimer(bus);
+        timer = new Timer(bus);
     }
 
     @Test(timeout = 5000)
@@ -52,7 +52,7 @@ public class TimerTest {
         TimerTick thirdTick = (TimerTick) messages.get(3);
         assertEquals("Third tick's time", Time.seconds(0), thirdTick.getTime());
         assertEquals("Third tick's phase", Phase.POMODORO, thirdTick.getPhase());
-        
+
         TimerFinished timerFinished = (TimerFinished) messages.get(4);
         assertEquals("Phase when timer finished", Phase.POMODORO, timerFinished.getPhase());
     }

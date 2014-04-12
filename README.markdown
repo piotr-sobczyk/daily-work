@@ -3,6 +3,10 @@ DialyWork
 
 This Tomighty fork is intended to help you perform tasks daily for fixed amount of time.
 
+You can adapt Pomodoro technique if you wish, but it's not mandatory. UI has other priorities than Pomodoro.
+
+Pause and resume at will, take breaks of arbitrary length.
+
 Building
 --------
 
