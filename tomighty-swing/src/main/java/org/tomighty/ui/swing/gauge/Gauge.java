@@ -27,8 +27,8 @@ import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
 import org.tomighty.bus.messages.ui.UiStateChanged;
 import org.tomighty.ui.UiState;
+import org.tomighty.ui.state.pomodoro.Burst;
 import org.tomighty.ui.swing.laf.GaugeButtonUI;
-import org.tomighty.ui.state.pomodoro.Pomodoro;
 import org.tomighty.ui.state.pomodoro.PomodoroFinished;
 import org.tomighty.ui.util.Geometry;
 
@@ -74,18 +74,18 @@ public class Gauge extends JPanel implements Subscriber<UiStateChanged> {
     }
 
     @Override
-	public void receive(UiStateChanged message) {
-		UiState uiState = message.uiState();
+    public void receive(UiStateChanged message) {
+        UiState uiState = message.uiState();
 
-        if(uiState instanceof PomodoroFinished)
+        if (uiState instanceof PomodoroFinished)
             buttonModel.turnNextLightOn();
 
-        else if(uiState instanceof Pomodoro)
+        else if (uiState instanceof Burst)
             turnAllLightsOffIfAllAreOn();
-	}
+    }
 
     private void turnAllLightsOffIfAllAreOn() {
-        if(buttonModel.areAllLightsOn())
+        if (buttonModel.areAllLightsOn())
             buttonModel.turnAllLightsOff();
     }
 

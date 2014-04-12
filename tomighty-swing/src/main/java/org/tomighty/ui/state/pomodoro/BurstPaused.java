@@ -12,7 +12,7 @@ import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.time.Timer;
 import org.tomighty.ui.state.UiStateSupport;
 
-public class PomodoroPaused extends UiStateSupport {
+public class BurstPaused extends UiStateSupport {
 
     @Inject
     private Timer timer;
@@ -21,7 +21,7 @@ public class PomodoroPaused extends UiStateSupport {
 
     @Override
     protected String title() {
-        return "Pomodoro (paused)";
+        return "Burst (paused)";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PomodoroPaused extends UiStateSupport {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            bus.publish(new ChangeUiState(Pomodoro.class));
+            bus.publish(new ChangeUiState(Burst.class));
         }
     }
 

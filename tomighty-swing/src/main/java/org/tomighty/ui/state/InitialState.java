@@ -25,7 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.tomighty.resources.Images;
-import org.tomighty.ui.state.pomodoro.Pomodoro;
+import org.tomighty.ui.state.pomodoro.Burst;
 
 public class InitialState extends UiStateSupport {
 
@@ -47,9 +47,9 @@ public class InitialState extends UiStateSupport {
 	@Override
 	protected Action[] primaryActions() {
 		return new Action[] {
-			new ToState(messages.get("Start pomodoro"), Pomodoro.class)
-		};
-	}
+                new ToState(messages.get("Start burst"), Burst.class)
+        };
+    }
 
 	@Override
 	protected Action[] secondaryActions() {

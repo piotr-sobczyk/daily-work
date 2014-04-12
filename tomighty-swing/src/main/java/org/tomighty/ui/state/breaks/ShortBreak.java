@@ -25,7 +25,7 @@ import org.tomighty.time.Time;
 import org.tomighty.ui.state.ToState;
 import org.tomighty.ui.theme.Colors;
 import org.tomighty.ui.theme.colors.Green;
-import org.tomighty.ui.state.pomodoro.Pomodoro;
+import org.tomighty.ui.state.pomodoro.Burst;
 
 public class ShortBreak extends Break {
 
@@ -57,8 +57,8 @@ public class ShortBreak extends Break {
 		return new Action[] {
 			new ToState(messages.get("Restart break"), ShortBreak.class),
 			new ToState(messages.get("Long break"), LongBreak.class),
-			new ToState(messages.get("New pomodoro"), Pomodoro.class)
-		};
-	}
+                new ToState(messages.get("New burst"), Burst.class)
+        };
+    }
 
 }

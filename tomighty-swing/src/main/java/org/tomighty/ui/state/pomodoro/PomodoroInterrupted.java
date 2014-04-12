@@ -27,29 +27,29 @@ import org.tomighty.ui.state.breaks.ShortBreak;
 
 public class PomodoroInterrupted extends UiStateSupport {
 
-	@Override
-	protected String title() {
-		return null;
-	}
+    @Override
+    protected String title() {
+        return null;
+    }
 
-	@Override
-	protected Component createContent() {
-		return labelFactory.medium(messages.get("Pomodoro interrupted"));
-	}
+    @Override
+    protected Component createContent() {
+        return labelFactory.medium(messages.get("Burst interrupted"));
+    }
 
-	@Override
-	protected Action[] primaryActions() {
-		return new Action[] {
-			new ToState(messages.get("Restart"), Pomodoro.class)
-		};
-	}
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
+                new ToState(messages.get("Restart"), Burst.class)
+        };
+    }
 
-	@Override
-	protected Action[] secondaryActions() {
-		return new Action[] {
-			new ToState(messages.get("Short break"), ShortBreak.class),
-			new ToState(messages.get("Long break"), LongBreak.class)
-		};
-	}
+    @Override
+    protected Action[] secondaryActions() {
+        return new Action[] {
+                new ToState(messages.get("Short break"), ShortBreak.class),
+                new ToState(messages.get("Long break"), LongBreak.class)
+        };
+    }
 
 }

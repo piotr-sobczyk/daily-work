@@ -27,34 +27,34 @@ import org.tomighty.ui.state.breaks.ShortBreak;
 
 public class PomodoroFinished extends UiStateSupport {
 
-	@Override
-	protected String title() {
-		return messages.get("Pomodoro finished");
-	}
-	
-	@Override
-	protected boolean displaysGauge() {
-		return true;
-	}
+    @Override
+    protected String title() {
+        return messages.get("Burst finished");
+    }
 
-	@Override
-	protected Component createContent() {
-		return labelFactory.medium(messages.get("Take a break"));
-	}
+    @Override
+    protected boolean displaysGauge() {
+        return true;
+    }
 
-	@Override
-	protected Action[] primaryActions() {
-		return new Action[] {
-			new ToState(messages.get("Short"), ShortBreak.class),
-			new ToState(messages.get("Long"),  LongBreak.class)
-		};
-	}
+    @Override
+    protected Component createContent() {
+        return labelFactory.medium(messages.get("What's next?"));
+    }
 
-	@Override
-	protected Action[] secondaryActions() {
-		return new Action[] {
-			new ToState(messages.get("New pomodoro"), Pomodoro.class)
-		};
-	}
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
+                new ToState("New burst", Burst.class),
+                new ToState(messages.get("Break"), ShortBreak.class)
+        };
+    }
+
+    @Override
+    protected Action[] secondaryActions() {
+        return new Action[] {
+                new ToState(messages.get("Long break"), LongBreak.class)
+        };
+    }
 
 }

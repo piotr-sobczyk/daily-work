@@ -22,7 +22,7 @@ import javax.swing.Action;
 
 import org.tomighty.ui.state.ToState;
 import org.tomighty.ui.state.UiStateSupport;
-import org.tomighty.ui.state.pomodoro.Pomodoro;
+import org.tomighty.ui.state.pomodoro.Burst;
 
 public class BreakFinished extends UiStateSupport {
 
@@ -39,9 +39,9 @@ public class BreakFinished extends UiStateSupport {
 	@Override
 	protected Action[] primaryActions() {
 		return new Action[] {
-			new ToState(messages.get("Start pomodoro"), Pomodoro.class)
-		};
-	}
+                new ToState(messages.get("Start burst"), Burst.class)
+        };
+    }
 
 	@Override
 	protected Action[] secondaryActions() {
