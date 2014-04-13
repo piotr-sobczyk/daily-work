@@ -18,6 +18,8 @@ package org.tomighty.time;
 
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 import org.tomighty.Phase;
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.messages.timer.TimerFinished;
@@ -25,14 +27,13 @@ import org.tomighty.bus.messages.timer.TimerInterrupted;
 import org.tomighty.bus.messages.timer.TimerStarted;
 import org.tomighty.bus.messages.timer.TimerTick;
 
-import javax.inject.Inject;
-
 public class Timer {
 
     private static final int ONE_SECOND = 1000;
 
     private TimerState state;
     private java.util.Timer timer;
+    private boolean isScheduled;
 
     private final Bus bus;
 
@@ -52,32 +53,45 @@ public class Timer {
     public void start(Time initialTime, Phase phase) {
         state = new TimerState(initialTime, phase);
         scheduleTimer();
+
         bus.publish(new TimerStarted(initialTime, phase));
     }
 
     private void finish() {
-        timer.cancel();
+        cancelTimer();
         state.markEnded();
+
         bus.publish(new TimerFinished(state.getPhase()));
     }
 
     public void interrupt() {
-        timer.cancel();
+        cancelTimer();
         state.markEnded();
+
         bus.publish(new TimerInterrupted(state.getTime(), state.getPhase()));
     }
 
     public void pause() {
-        timer.cancel();
+        cancelTimer();
     }
 
     public void resume() {
         scheduleTimer();
     }
 
+    private void cancelTimer() {
+        timer.cancel();
+        isScheduled = false;
+    }
+
     private void scheduleTimer() {
+        if (isScheduled) {
+            throw new IllegalStateException("Trying to start a timer that is already active");
+        }
+
         timer = new java.util.Timer(getClass().getSimpleName());
         timer.scheduleAtFixedRate(new Tick(), ONE_SECOND, ONE_SECOND);
+        isScheduled = true;
     }
 
     private void tick() {

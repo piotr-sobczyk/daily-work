@@ -28,9 +28,6 @@ import org.tomighty.config.Options;
 import org.tomighty.time.Time;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.state.TimerSupport;
-import org.tomighty.ui.state.ToState;
-import org.tomighty.ui.state.breaks.LongBreak;
-import org.tomighty.ui.state.breaks.ShortBreak;
 import org.tomighty.ui.theme.Colors;
 import org.tomighty.ui.theme.colors.Red;
 
@@ -52,7 +49,7 @@ public class Burst extends TimerSupport {
     @Override
     protected Time initialTime() {
         int minutes = options.time().pomodoro();
-        return new Time(minutes);
+        return new Time(0, minutes);
     }
 
     @Override
@@ -85,10 +82,21 @@ public class Burst extends TimerSupport {
     @Override
     protected Action[] secondaryActions() {
         return new Action[] {
-                new ToState(messages.get("Restart burst"), Burst.class),
-                new ToState(messages.get("Short break"), ShortBreak.class),
-                new ToState(messages.get("Long break"), LongBreak.class)
+                new Interrupt()
         };
+    }
+
+    @SuppressWarnings("serial")
+    private class Interrupt extends AbstractAction {
+        public Interrupt() {
+            super(messages.get("Interrupt"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            timer.interrupt();
+            bus.publish(new ChangeUiState(interruptedState()));
+        }
     }
 
     @SuppressWarnings("serial")
