@@ -18,20 +18,19 @@ package org.tomighty.config;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.messages.config.TimeOnTrayConfigChanged;
 import org.tomighty.bus.messages.ui.LookChanged;
 import org.tomighty.ui.theme.Theme;
 import org.tomighty.ui.theme.themes.Shiny;
 
-import javax.inject.Inject;
-
 public class Options {
 	
 	private static final String TIME_POMODORO = "option.time.pomodoro";
-	private static final String TIME_SHORT_BREAK = "option.time.shortBreak";
-	private static final String TIME_LONG_BREAK = "option.time.longBreak";
-	private static final String UI_THEME = "option.ui.theme";
+    private static final String TIME_BREAK = "option.time.break";
+    private static final String UI_THEME = "option.ui.theme";
 	private static final String UI_AUTOHIDE_WINDOW = "option.ui.window.autohide";
 	private static final String UI_DRAGGABLE_WINDOW = "option.ui.window.draggable";
 	private static final String UI_SHOW_TIME_ON_TRAY = "option.ui.showTimeOnTray";
@@ -64,26 +63,19 @@ public class Options {
 			return config.asInt(TIME_POMODORO, 25);
 		}
 
-		public int shortBreak() {
-			return config.asInt(TIME_SHORT_BREAK, 5);
-		}
+        public void pomodoro(int minutes) {
+            config.set(TIME_POMODORO, minutes);
+        }
 
-		public int longBreak() {
-			return config.asInt(TIME_LONG_BREAK, 15);
-		}
+        public int breakTime() {
+            return config.asInt(TIME_BREAK, 5);
+        }
 
-		public void pomodoro(int minutes) {
-			config.set(TIME_POMODORO, minutes);
-		}
+        public void breakTime(int minutes) {
+            config.set(TIME_BREAK, minutes);
+        }
 
-		public void shortBreak(int minutes) {
-			config.set(TIME_SHORT_BREAK, minutes);
-		}
-
-		public void longBreak(int minutes) {
-			config.set(TIME_LONG_BREAK, minutes);
-		}
-	}
+    }
 	
 	public class UserInterfaceOptions {
 		public boolean autoHideWindow() {

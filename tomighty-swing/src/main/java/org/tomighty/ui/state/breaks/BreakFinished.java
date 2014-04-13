@@ -26,29 +26,26 @@ import org.tomighty.ui.state.pomodoro.Burst;
 
 public class BreakFinished extends UiStateSupport {
 
-	@Override
-	protected String title() {
-		return null;
-	}
+    @Override
+    protected String title() {
+        return null;
+    }
 
-	@Override
-	protected Component createContent() {
-		return labelFactory.medium(messages.get("Break finished"));
-	}
+    @Override
+    protected Component createContent() {
+        return labelFactory.medium(messages.get("Break finished"));
+    }
 
-	@Override
-	protected Action[] primaryActions() {
-		return new Action[] {
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
                 new ToState(messages.get("Start burst"), Burst.class)
         };
     }
 
-	@Override
-	protected Action[] secondaryActions() {
-		return new Action[] {
-			new ToState(messages.get("Short break"), ShortBreak.class),
-			new ToState(messages.get("Long break"), LongBreak.class)
-		};
-	}
+    @Override
+    protected Action[] secondaryActions() {
+        return new Action[] { };
+    }
 
 }

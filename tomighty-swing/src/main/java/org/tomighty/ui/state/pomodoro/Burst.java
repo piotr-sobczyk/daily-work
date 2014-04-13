@@ -69,7 +69,7 @@ public class Burst extends TimerSupport {
 
     @Override
     protected Class<? extends UiState> interruptedState() {
-        return PomodoroInterrupted.class;
+        return BurstInterrupted.class;
     }
 
     @Override

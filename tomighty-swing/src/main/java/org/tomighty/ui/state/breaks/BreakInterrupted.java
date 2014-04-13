@@ -46,9 +46,8 @@ public class BreakInterrupted extends UiStateSupport {
 	@Override
 	protected Action[] secondaryActions() {
 		return new Action[] {
-			new ToState(messages.get("Short break"), ShortBreak.class),
-			new ToState(messages.get("Long break"), LongBreak.class)
-		};
+                new ToState(messages.get("Break"), Break.class)
+        };
 	}
 
 }

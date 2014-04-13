@@ -18,14 +18,56 @@ package org.tomighty.ui.state.breaks;
 
 import java.awt.event.ActionEvent;
 
+import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import org.tomighty.Phase;
 import org.tomighty.bus.messages.ui.ChangeUiState;
+import org.tomighty.config.Options;
+import org.tomighty.time.Time;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.state.TimerSupport;
+import org.tomighty.ui.theme.Colors;
+import org.tomighty.ui.theme.colors.Green;
 
-public abstract class Break extends TimerSupport {
+public class Break extends TimerSupport {
+
+    @Inject
+    private Options options;
+
+    @Override
+    public Colors colors() {
+        return Green.instance();
+    }
+
+    @Override
+    protected String title() {
+        return messages.get("Break");
+    }
+
+    @Override
+    protected Time initialTime() {
+        int minutes = options.time().breakTime();
+        return new Time(minutes);
+    }
+
+    @Override
+    protected Phase phase() {
+        return Phase.BREAK;
+    }
+
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
+                new Interrupt()
+        };
+    }
+
+    @Override
+    protected Action[] secondaryActions() {
+        return new Action[] { };
+    }
 
     @Override
     protected Class<? extends UiState> finishedState() {
@@ -35,13 +77,6 @@ public abstract class Break extends TimerSupport {
     @Override
     protected Class<? extends UiState> interruptedState() {
         return BreakInterrupted.class;
-    }
-
-    @Override
-    protected Action[] primaryActions() {
-        return new Action[] {
-                new Interrupt()
-        };
     }
 
     @SuppressWarnings("serial")

@@ -22,8 +22,7 @@ import javax.swing.Action;
 
 import org.tomighty.ui.state.ToState;
 import org.tomighty.ui.state.UiStateSupport;
-import org.tomighty.ui.state.breaks.LongBreak;
-import org.tomighty.ui.state.breaks.ShortBreak;
+import org.tomighty.ui.state.breaks.Break;
 
 public class PomodoroFinished extends UiStateSupport {
 
@@ -46,15 +45,13 @@ public class PomodoroFinished extends UiStateSupport {
     protected Action[] primaryActions() {
         return new Action[] {
                 new ToState("New burst", Burst.class),
-                new ToState(messages.get("Break"), ShortBreak.class)
+                new ToState(messages.get("Break"), Break.class)
         };
     }
 
     @Override
     protected Action[] secondaryActions() {
-        return new Action[] {
-                new ToState(messages.get("Long break"), LongBreak.class)
-        };
+        return new Action[] { };
     }
 
 }

@@ -36,15 +36,13 @@ public class Times extends OptionPanel implements OptionGroup {
 	@Inject private Messages messages;
 
 	private JFormattedTextField pomodoro;
-	private JFormattedTextField shortBreak;
-	private JFormattedTextField longBreak;
+    private JFormattedTextField breakTime;
 
     @PostConstruct
 	public void initialize() {
-		pomodoro = addField("Pomodoro");
-		shortBreak = addField("Short break");
-		longBreak = addField("Long break");
-	}
+        pomodoro = addField("Burst");
+        breakTime = addField("Break");
+    }
 	
 	@Override
 	public String name() {
@@ -59,16 +57,14 @@ public class Times extends OptionPanel implements OptionGroup {
 	@Override
 	public void readConfiguration() {
 		pomodoro.setValue(options.time().pomodoro());
-		shortBreak.setValue(options.time().shortBreak());
-		longBreak.setValue(options.time().longBreak());
-	}
+        breakTime.setValue(options.time().breakTime());
+    }
 
 	@Override
 	public void saveConfiguration() {
 		options.time().pomodoro(valueOf(pomodoro));
-		options.time().shortBreak(valueOf(shortBreak));
-		options.time().longBreak(valueOf(longBreak));
-	}
+        options.time().breakTime(valueOf(breakTime));
+    }
 
 	private int valueOf(JFormattedTextField field) {
 		String text = field.getText(); 
