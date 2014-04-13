@@ -16,9 +16,14 @@
 
 package org.tomighty;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.mycila.inject.jsr250.Jsr250;
+import static javax.swing.SwingUtilities.invokeLater;
+
+import java.awt.Component;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.swing.UIManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tomighty.bus.Bus;
@@ -29,18 +34,14 @@ import org.tomighty.bus.messages.ui.UiStateChanged;
 import org.tomighty.config.Directories;
 import org.tomighty.config.Options;
 import org.tomighty.inject.TomightyModule;
-import org.tomighty.plugin.PluginManager;
-import org.tomighty.ui.tray.TrayManager;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.state.InitialState;
+import org.tomighty.ui.tray.TrayManager;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.swing.*;
-import java.awt.*;
-
-import static javax.swing.SwingUtilities.invokeLater;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.mycila.inject.jsr250.Jsr250;
 
 public class Tomighty implements Runnable {
 
@@ -48,7 +49,6 @@ public class Tomighty implements Runnable {
 	@Inject private Options options;
 	@Inject private Bus bus;
 	@Inject private Injector injector;
-    @Inject private PluginManager pluginManager;
     @Inject private Directories directories;
     private UiState currentState;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -72,7 +72,6 @@ public class Tomighty implements Runnable {
 	@Override
 	public void run() {
 		render(InitialState.class);
-        pluginManager.loadPluginsFrom(directories.plugins());
 	}
 
     private void render(Class<? extends UiState> stateClass) {

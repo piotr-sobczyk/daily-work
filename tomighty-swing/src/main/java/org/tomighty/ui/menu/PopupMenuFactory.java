@@ -1,11 +1,15 @@
 package org.tomighty.ui.menu;
 
-import com.google.inject.Injector;
-import org.tomighty.i18n.Messages;
+import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
-import javax.swing.*;
-import java.awt.event.ActionListener;
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import org.tomighty.i18n.Messages;
+
+import com.google.inject.Injector;
 
 public class PopupMenuFactory {
 
@@ -25,11 +29,7 @@ public class PopupMenuFactory {
             menu.addSeparator();
         }
 
-        JMenu pluginsMenu = new JMenu(messages.get("Plugins"));
-        pluginsMenu.add(menuItem("Manage", injector.getInstance(ShowPluginManager.class)));
-
         menu.add(menuItem("Options", injector.getInstance(ShowOptions.class)));
-        menu.add(pluginsMenu);
         //TODO: prepare new About page
         //menu.add(menuItem("About", injector.getInstance(ShowAboutWindow.class)));
         menu.addSeparator();
