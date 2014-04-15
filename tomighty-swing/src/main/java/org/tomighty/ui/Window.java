@@ -16,6 +16,9 @@
 
 package org.tomighty.ui;
 
+import static org.tomighty.ui.util.Geometry.offset;
+import static org.tomighty.ui.util.Geometry.opposite;
+
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -33,7 +36,6 @@ import org.tomighty.resources.Images;
 import org.tomighty.ui.location.Closest;
 import org.tomighty.ui.location.Location;
 import org.tomighty.ui.swing.laf.SexyPanelUI;
-import static org.tomighty.ui.util.Geometry.*;
 
 @SuppressWarnings("serial")
 public class Window extends JFrame {
@@ -46,8 +48,8 @@ public class Window extends JFrame {
 
 	@Inject
 	public Window(SexyPanelUI panelUI) {
-		super("Tomighty");
-		panel.setUI(panelUI);
+        super("Dialy Work");
+        panel.setUI(panelUI);
 		setAlwaysOnTop(true);
 		setContentPane(panel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
