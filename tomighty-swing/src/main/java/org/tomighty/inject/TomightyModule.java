@@ -22,6 +22,7 @@ import org.tomighty.bus.Bus;
 import org.tomighty.bus.DefaultBus;
 import org.tomighty.config.Configuration;
 import org.tomighty.config.Options;
+import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
 import org.tomighty.resources.cache.Caches;
 import org.tomighty.sound.SoundPlayer;
@@ -49,6 +50,7 @@ public class TomightyModule extends AbstractModule {
         bind(Gauge.class).in(SINGLETON);
         bind(Options.class).in(SINGLETON);
         bind(Configuration.class).in(SINGLETON);
+        bind(Projects.class).in(SINGLETON);
         bind(Messages.class).in(SINGLETON);
         bind(Sounds.class).in(SINGLETON);
         bind(SoundPlayer.class).in(SINGLETON);
