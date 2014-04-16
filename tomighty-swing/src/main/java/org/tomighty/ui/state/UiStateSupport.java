@@ -16,12 +16,25 @@
 
 package org.tomighty.ui.state;
 
-import com.google.inject.Injector;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.LINE_END;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
+
+import javax.inject.Inject;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.tomighty.bus.Bus;
 import org.tomighty.i18n.Messages;
 import org.tomighty.ui.UiState;
-import org.tomighty.ui.layout.DockLayout;
-import org.tomighty.ui.layout.Docking;
 import org.tomighty.ui.menu.MenuButtonFactory;
 import org.tomighty.ui.swing.gauge.Gauge;
 import org.tomighty.ui.swing.laf.SexyArrowButtonUI;
@@ -29,11 +42,7 @@ import org.tomighty.ui.swing.laf.SexyButtonUI;
 import org.tomighty.ui.swing.laf.SexyLabel;
 import org.tomighty.ui.theme.Colors;
 
-import javax.inject.Inject;
-import javax.swing.*;
-import java.awt.*;
-
-import static java.awt.BorderLayout.*;
+import com.google.inject.Injector;
 
 public abstract class UiStateSupport implements UiState {
 
@@ -59,9 +68,16 @@ public abstract class UiStateSupport implements UiState {
 	public final Component render() throws Exception {
 		JPanel component = createComponent();
         JButton menuButton = menuButtonFactory.create(secondaryActions());
-        JPanel panel = createPanel(new DockLayout());
-        panel.add(menuButton, Docking.rightTop());
-        panel.add(component, Docking.fill());
+        JPanel panel = createPanel();
+
+        JPanel topBar = createPanel();
+        JLabel projectLabel = labelFactory.medium("Project");
+        projectLabel.setHorizontalAlignment(JLabel.CENTER);
+        topBar.add(projectLabel, CENTER);
+        topBar.add(menuButton, LINE_END);
+
+        panel.add(topBar, NORTH);
+        panel.add(component, CENTER);
         return panel;
     }
 	
@@ -114,11 +130,11 @@ public abstract class UiStateSupport implements UiState {
 	private JPanel createPanel() {
 		return createPanel(new BorderLayout());
 	}
-	
-	private static final JPanel createPanel(LayoutManager layout) {
-		JPanel panel = new JPanel(layout);
-		panel.setOpaque(false);
-		return panel;
-	}
+
+    private static JPanel createPanel(LayoutManager layout) {
+        JPanel panel = new JPanel(layout);
+        panel.setOpaque(false);
+        return panel;
+    }
 
 }

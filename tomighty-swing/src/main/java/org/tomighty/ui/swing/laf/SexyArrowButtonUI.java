@@ -36,61 +36,65 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import org.tomighty.ui.theme.Look;
 
 public class SexyArrowButtonUI extends BasicButtonUI {
-	
-	@Inject
+
+    @Inject
     private Look look;
-	
-	@Override
-	public void installUI(JComponent component) {
-		super.installUI(component);
-		JButton button = (JButton)component;
-		button.setSize(new Dimension(17, 16));
-		button.setOpaque(false);
-		button.setBorderPainted(false);
-	}
-	
-	@Override
-	public void paint(Graphics g, JComponent c) {
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-		
-		AbstractButton button = (AbstractButton) c;
-		ButtonModel model = button.getModel();
-		if(model.isRollover()) {
-			paintBackground(g2d, button);
-			paintRoundBorder(g2d, button);
-		}
-		
-		g.translate(3, 5);
-		
-		g.setColor(Color.WHITE);
-		g.drawLine(1, 0, 5, 4);
-		g.drawLine(0, 0, 5, 5);
-		g.drawLine(5, 4, 9, 0);
-		g.drawLine(5, 5, 10, 0);
-		
-		g.setColor(look.colors().shadow());
-		g.drawLine(0, 1, 5, 6);
-		g.drawLine(5, 6, 10, 1);
-	}
 
-	private void paintRoundBorder(Graphics2D g, AbstractButton b) {
-		Color color = look.colors().shadow();
-		g.setColor(color);
-		g.drawRoundRect(0, 0, b.getWidth()-1, b.getHeight()-1, 4, 4);
-	}
+    @Override
+    public void installUI(JComponent component) {
+        super.installUI(component);
+        JButton button = (JButton) component;
 
-	private void paintBackground(Graphics2D graphics, AbstractButton b) {
-		Graphics2D g = (Graphics2D) graphics.create();
-		try {
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
-			Color startingColor = look.colors().shadow().brighter().brighter();
-			Color endingColor = look.colors().shadow().darker();
-			g.setPaint(new GradientPaint(0, 0, startingColor, 0, b.getHeight(), endingColor));
-			g.fillRect(1, 1, b.getWidth()-2, b.getHeight()-2);
-		} finally {
-			g.dispose();
-		}
-	}
-	
+        Dimension dimension = new Dimension(17, 16);
+        button.setSize(dimension);
+        button.setPreferredSize(dimension);
+
+        button.setOpaque(false);
+        button.setBorderPainted(false);
+    }
+
+    @Override
+    public void paint(Graphics g, JComponent c) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+
+        AbstractButton button = (AbstractButton) c;
+        ButtonModel model = button.getModel();
+        if (model.isRollover()) {
+            paintBackground(g2d, button);
+            paintRoundBorder(g2d, button);
+        }
+
+        g.translate(3, 5);
+
+        g.setColor(Color.WHITE);
+        g.drawLine(1, 0, 5, 4);
+        g.drawLine(0, 0, 5, 5);
+        g.drawLine(5, 4, 9, 0);
+        g.drawLine(5, 5, 10, 0);
+
+        g.setColor(look.colors().shadow());
+        g.drawLine(0, 1, 5, 6);
+        g.drawLine(5, 6, 10, 1);
+    }
+
+    private void paintRoundBorder(Graphics2D g, AbstractButton b) {
+        Color color = look.colors().shadow();
+        g.setColor(color);
+        g.drawRoundRect(0, 0, b.getWidth() - 1, b.getHeight() - 1, 4, 4);
+    }
+
+    private void paintBackground(Graphics2D graphics, AbstractButton b) {
+        Graphics2D g = (Graphics2D) graphics.create();
+        try {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+            Color startingColor = look.colors().shadow().brighter().brighter();
+            Color endingColor = look.colors().shadow().darker();
+            g.setPaint(new GradientPaint(0, 0, startingColor, 0, b.getHeight(), endingColor));
+            g.fillRect(1, 1, b.getWidth() - 2, b.getHeight() - 2);
+        } finally {
+            g.dispose();
+        }
+    }
+
 }
