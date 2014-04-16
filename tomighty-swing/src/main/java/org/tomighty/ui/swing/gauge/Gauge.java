@@ -16,20 +16,22 @@
 
 package org.tomighty.ui.swing.gauge;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
 import org.tomighty.bus.messages.ui.UiStateChanged;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.state.pomodoro.Burst;
+import org.tomighty.ui.state.pomodoro.BurstFinished;
 import org.tomighty.ui.swing.laf.GaugeButtonUI;
-import org.tomighty.ui.state.pomodoro.PomodoroFinished;
 import org.tomighty.ui.util.Geometry;
 
 @SuppressWarnings("serial")
@@ -77,7 +79,7 @@ public class Gauge extends JPanel implements Subscriber<UiStateChanged> {
     public void receive(UiStateChanged message) {
         UiState uiState = message.uiState();
 
-        if (uiState instanceof PomodoroFinished)
+        if (uiState instanceof BurstFinished)
             buttonModel.turnNextLightOn();
 
         else if (uiState instanceof Burst)

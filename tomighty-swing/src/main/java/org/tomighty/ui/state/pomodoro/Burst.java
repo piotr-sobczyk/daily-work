@@ -59,12 +59,12 @@ public class Burst extends TimerSupport {
 
     @Override
     protected boolean displaysGauge() {
-        return true;
+        return false;
     }
 
     @Override
     protected Class<? extends UiState> finishedState() {
-        return PomodoroFinished.class;
+        return BurstFinished.class;
     }
 
     @Override
