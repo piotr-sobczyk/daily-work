@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.tomighty.ui.state.pomodoro;
+package org.tomighty.ui.state.bursts;
 
 import java.awt.event.ActionEvent;
 

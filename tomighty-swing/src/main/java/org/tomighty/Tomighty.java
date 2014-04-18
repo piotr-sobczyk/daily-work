@@ -41,7 +41,7 @@ import org.tomighty.time.Timer;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.state.InitialState;
-import org.tomighty.ui.state.pomodoro.BurstPaused;
+import org.tomighty.ui.state.bursts.BurstPaused;
 import org.tomighty.ui.tray.TrayManager;
 
 import com.google.inject.Guice;
@@ -50,11 +50,16 @@ import com.mycila.inject.jsr250.Jsr250;
 
 public class Tomighty implements Runnable {
 
-	@Inject private Window window;
-	@Inject private Options options;
-	@Inject private Bus bus;
-	@Inject private Injector injector;
-    @Inject private Directories directories;
+    @Inject
+    private Window window;
+    @Inject
+    private Options options;
+    @Inject
+    private Bus bus;
+    @Inject
+    private Injector injector;
+    @Inject
+    private Directories directories;
     private UiState currentState;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
@@ -64,38 +69,38 @@ public class Tomighty implements Runnable {
 
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		Injector injector = Guice.createInjector(new TomightyModule(), Jsr250.newJsr250Module());
+        Injector injector = Guice.createInjector(new TomightyModule(), Jsr250.newJsr250Module());
 
-		Tomighty tomighty = injector.getInstance(Tomighty.class);
-		invokeLater(tomighty);
-		TrayManager trayManager = injector.getInstance(TrayManager.class);
-		invokeLater(trayManager);
-	}
+        Tomighty tomighty = injector.getInstance(Tomighty.class);
+        invokeLater(tomighty);
+        TrayManager trayManager = injector.getInstance(TrayManager.class);
+        invokeLater(trayManager);
+    }
 
-	@PostConstruct
-	public void initialize() {
-		bus.subscribe(new SwitchState(), ChangeUiState.class);
-		bus.subscribe(new ShowWindow(), TrayClick.class);
+    @PostConstruct
+    public void initialize() {
+        bus.subscribe(new SwitchState(), ChangeUiState.class);
+        bus.subscribe(new ShowWindow(), TrayClick.class);
         bus.subscribe(new ChangeProject(), ProjectChanged.class);
     }
 
     @Override
-	public void run() {
-		render(InitialState.class);
-	}
+    public void run() {
+        render(InitialState.class);
+    }
 
     private void render(Class<? extends UiState> stateClass) {
-		if(currentState != null) {
-			currentState.beforeDetaching();
-		}
-		currentState = injector.getInstance(stateClass);
-		Component component;
-		try {
-			component = currentState.render();
-		} catch (Exception error) {
+        if (currentState != null) {
+            currentState.beforeDetaching();
+        }
+        currentState = injector.getInstance(stateClass);
+        Component component;
+        try {
+            component = currentState.render();
+        } catch (Exception error) {
             logger.error("Failed to render state: " + currentState, error);
-			return;
-		}
+            return;
+        }
         window.setViewportView(component);
         currentState.afterRendering();
     }
@@ -127,33 +132,33 @@ public class Tomighty implements Runnable {
 
     private class SwitchState implements Subscriber<ChangeUiState> {
         @Override
-		public void receive(final ChangeUiState message) {
-			invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					Class<? extends UiState> stateClass = message.getStateClass();
-					render(stateClass);
-					window.show(null);
-					bus.publish(new UiStateChanged(currentState));
-				}
-			});
-		}
-	}
+        public void receive(final ChangeUiState message) {
+            invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Class<? extends UiState> stateClass = message.getStateClass();
+                    render(stateClass);
+                    window.show(null);
+                    bus.publish(new UiStateChanged(currentState));
+                }
+            });
+        }
+    }
 
-	private class ShowWindow implements Subscriber<TrayClick> {
-		@Override
-		public void receive(final TrayClick message) {
-			invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if(options.ui().autoHideWindow() || !window.isVisible()) {
-						window.show(message.mouseLocation());
-					} else {
-						window.setVisible(false);
-					}
-				}
-			});
-		}
-	}
+    private class ShowWindow implements Subscriber<TrayClick> {
+        @Override
+        public void receive(final TrayClick message) {
+            invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    if (options.ui().autoHideWindow() || !window.isVisible()) {
+                        window.show(message.mouseLocation());
+                    } else {
+                        window.setVisible(false);
+                    }
+                }
+            });
+        }
+    }
 
 }

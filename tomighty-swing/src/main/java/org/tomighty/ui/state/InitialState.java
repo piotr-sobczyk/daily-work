@@ -25,35 +25,35 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.tomighty.resources.Images;
-import org.tomighty.ui.state.pomodoro.Burst;
+import org.tomighty.ui.state.bursts.Burst;
 
 public class InitialState extends UiStateSupport {
 
-	@Inject
+    @Inject
     private Images images;
-	
-	@Override
-	protected String title() {
-		return null;
-	}
 
-	@Override
-	protected Component createContent() {
-		Image image = images.tomato();
-		ImageIcon imageIcon = new ImageIcon(image);
-		return new JLabel(imageIcon);
-	}
+    @Override
+    protected String title() {
+        return null;
+    }
 
-	@Override
-	protected Action[] primaryActions() {
-		return new Action[] {
+    @Override
+    protected Component createContent() {
+        Image image = images.tomato();
+        ImageIcon imageIcon = new ImageIcon(image);
+        return new JLabel(imageIcon);
+    }
+
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
                 new ToState(messages.get("Start burst"), Burst.class)
         };
     }
 
-	@Override
-	protected Action[] secondaryActions() {
-		return null;
-	}
+    @Override
+    protected Action[] secondaryActions() {
+        return null;
+    }
 
 }

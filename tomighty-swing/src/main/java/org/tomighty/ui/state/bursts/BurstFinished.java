@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.tomighty.ui.state.pomodoro;
+package org.tomighty.ui.state.bursts;
 
 import java.awt.Component;
 
@@ -24,30 +24,34 @@ import org.tomighty.ui.state.ToState;
 import org.tomighty.ui.state.UiStateSupport;
 import org.tomighty.ui.state.breaks.Break;
 
-public class BurstInterrupted extends UiStateSupport {
+public class BurstFinished extends UiStateSupport {
 
     @Override
     protected String title() {
-        return null;
+        return messages.get("Burst finished");
+    }
+
+    @Override
+    protected boolean displaysGauge() {
+        return false;
     }
 
     @Override
     protected Component createContent() {
-        return labelFactory.medium(messages.get("Burst interrupted"));
+        return labelFactory.medium(messages.get("What's next?"));
     }
 
     @Override
     protected Action[] primaryActions() {
         return new Action[] {
-                new ToState(messages.get("Restart"), Burst.class)
+                new ToState("New burst", Burst.class),
+                new ToState(messages.get("Break"), Break.class)
         };
     }
 
     @Override
     protected Action[] secondaryActions() {
-        return new Action[] {
-                new ToState(messages.get("Break"), Break.class)
-        };
+        return new Action[] { };
     }
 
 }

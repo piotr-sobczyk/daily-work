@@ -22,32 +22,32 @@ import javax.swing.Action;
 
 import org.tomighty.ui.state.ToState;
 import org.tomighty.ui.state.UiStateSupport;
-import org.tomighty.ui.state.pomodoro.Burst;
+import org.tomighty.ui.state.bursts.Burst;
 
 public class BreakInterrupted extends UiStateSupport {
 
-	@Override
-	protected String title() {
-		return null;
-	}
+    @Override
+    protected String title() {
+        return null;
+    }
 
-	@Override
-	protected Component createContent() {
-		return labelFactory.medium(messages.get("Break interrupted"));
-	}
+    @Override
+    protected Component createContent() {
+        return labelFactory.medium(messages.get("Break interrupted"));
+    }
 
-	@Override
-	protected Action[] primaryActions() {
-		return new Action[] {
+    @Override
+    protected Action[] primaryActions() {
+        return new Action[] {
                 new ToState(messages.get("Start burst"), Burst.class)
         };
     }
 
-	@Override
-	protected Action[] secondaryActions() {
-		return new Action[] {
+    @Override
+    protected Action[] secondaryActions() {
+        return new Action[] {
                 new ToState(messages.get("Break"), Break.class)
         };
-	}
+    }
 
 }

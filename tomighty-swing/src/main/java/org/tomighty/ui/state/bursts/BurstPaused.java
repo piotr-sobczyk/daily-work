@@ -1,4 +1,4 @@
-package org.tomighty.ui.state.pomodoro;
+package org.tomighty.ui.state.bursts;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

@@ -22,7 +22,7 @@ import javax.swing.Action;
 
 import org.tomighty.ui.state.ToState;
 import org.tomighty.ui.state.UiStateSupport;
-import org.tomighty.ui.state.pomodoro.Burst;
+import org.tomighty.ui.state.bursts.Burst;
 
 public class BreakFinished extends UiStateSupport {
 

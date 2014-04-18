@@ -27,41 +27,43 @@ import org.tomighty.ui.theme.Theme;
 import org.tomighty.ui.theme.themes.Shiny;
 
 public class Options {
-	
-	private static final String TIME_POMODORO = "option.time.pomodoro";
+
+    private static final String TIME_POMODORO = "option.time.bursts";
     private static final String TIME_BREAK = "option.time.break";
     private static final String UI_THEME = "option.ui.theme";
-	private static final String UI_AUTOHIDE_WINDOW = "option.ui.window.autohide";
-	private static final String UI_DRAGGABLE_WINDOW = "option.ui.window.draggable";
-	private static final String UI_SHOW_TIME_ON_TRAY = "option.ui.showTimeOnTray";
-	private static final String SOUND_WIND = "option.sound.timer.wind";
-	private static final String SOUND_TICTAC = "option.sound.timer.tictac";
-	private static final String SOUND_DING = "option.sound.timer.ding";
-	
-	@Inject private Configuration config;
-	@Inject private Bus bus;
-	
-	private UserInterfaceOptions ui = new UserInterfaceOptions();
-	private SoundOptions sound = new SoundOptions();
-	private TimeOptions time = new TimeOptions();
-	
-	public UserInterfaceOptions ui() {
-		return ui;
-	}
-	
-	public SoundOptions sound() {
-		return sound;
-	}
+    private static final String UI_AUTOHIDE_WINDOW = "option.ui.window.autohide";
+    private static final String UI_DRAGGABLE_WINDOW = "option.ui.window.draggable";
+    private static final String UI_SHOW_TIME_ON_TRAY = "option.ui.showTimeOnTray";
+    private static final String SOUND_WIND = "option.sound.timer.wind";
+    private static final String SOUND_TICTAC = "option.sound.timer.tictac";
+    private static final String SOUND_DING = "option.sound.timer.ding";
 
-	public TimeOptions time() {
-		return time;
-	}
-	
-	public class TimeOptions {
+    @Inject
+    private Configuration config;
+    @Inject
+    private Bus bus;
 
-		public int pomodoro() {
-			return config.asInt(TIME_POMODORO, 25);
-		}
+    private UserInterfaceOptions ui = new UserInterfaceOptions();
+    private SoundOptions sound = new SoundOptions();
+    private TimeOptions time = new TimeOptions();
+
+    public UserInterfaceOptions ui() {
+        return ui;
+    }
+
+    public SoundOptions sound() {
+        return sound;
+    }
+
+    public TimeOptions time() {
+        return time;
+    }
+
+    public class TimeOptions {
+
+        public int pomodoro() {
+            return config.asInt(TIME_POMODORO, 25);
+        }
 
         public void pomodoro(int minutes) {
             config.set(TIME_POMODORO, minutes);
@@ -76,90 +78,90 @@ public class Options {
         }
 
     }
-	
-	public class UserInterfaceOptions {
-		public boolean autoHideWindow() {
-			return config.asBoolean(UI_AUTOHIDE_WINDOW, true);
-		}
-		
-		public void autoHide(boolean autoHide) {
-			config.set(UI_AUTOHIDE_WINDOW, autoHide);
-		}
-		
-		public Theme theme() {
-			return config.asObject(UI_THEME, Shiny.class);
-		}
 
-		public void theme(Class<? extends Theme> clazz) {
-			Class<? extends Theme> currentClass = config.asClass(UI_THEME, Shiny.class);
-			if(!clazz.equals(currentClass)) {
-				config.set(UI_THEME, clazz);
-				bus.publish(new LookChanged());
-			}
-		}
+    public class UserInterfaceOptions {
+        public boolean autoHideWindow() {
+            return config.asBoolean(UI_AUTOHIDE_WINDOW, true);
+        }
 
-		public boolean showTimeOnTray() {
-			return config.asBoolean(UI_SHOW_TIME_ON_TRAY, true);
-		}
+        public void autoHide(boolean autoHide) {
+            config.set(UI_AUTOHIDE_WINDOW, autoHide);
+        }
 
-		public void showTimeOnTray(boolean show) {
-			if(show != showTimeOnTray()) {
-				config.set(UI_SHOW_TIME_ON_TRAY, show);
-				bus.publish(new TimeOnTrayConfigChanged(show));
-			}
-		}
+        public Theme theme() {
+            return config.asObject(UI_THEME, Shiny.class);
+        }
 
-		public boolean draggableWindow() {
-			return config.asBoolean(UI_DRAGGABLE_WINDOW, false);
-		}
+        public void theme(Class<? extends Theme> clazz) {
+            Class<? extends Theme> currentClass = config.asClass(UI_THEME, Shiny.class);
+            if (!clazz.equals(currentClass)) {
+                config.set(UI_THEME, clazz);
+                bus.publish(new LookChanged());
+            }
+        }
 
-		public void draggableWindow(boolean draggable) {
-			config.set(UI_DRAGGABLE_WINDOW, draggable);
-		}
-	}
-	
-	public class SoundOptions {
-		private SoundConfig wind = new SoundConfig(SOUND_WIND);
-		private SoundConfig tictac = new SoundConfig(SOUND_TICTAC);
-		private SoundConfig ding = new SoundConfig(SOUND_DING);
+        public boolean showTimeOnTray() {
+            return config.asBoolean(UI_SHOW_TIME_ON_TRAY, true);
+        }
 
-		public SoundConfig wind() {
-			return wind;
-		}
+        public void showTimeOnTray(boolean show) {
+            if (show != showTimeOnTray()) {
+                config.set(UI_SHOW_TIME_ON_TRAY, show);
+                bus.publish(new TimeOnTrayConfigChanged(show));
+            }
+        }
 
-		public SoundConfig tictac() {
-			return tictac;
-		}
+        public boolean draggableWindow() {
+            return config.asBoolean(UI_DRAGGABLE_WINDOW, false);
+        }
 
-		public SoundConfig ding() {
-			return ding;
-		}
-	}
-	
-	public class SoundConfig {
-		private String enabledKey;
-		private String fileKey;
-		
-		public SoundConfig(String key) {
-			this.enabledKey = key+".enabled";
-			this.fileKey = key+".file";
-		}
+        public void draggableWindow(boolean draggable) {
+            config.set(UI_DRAGGABLE_WINDOW, draggable);
+        }
+    }
 
-		public boolean enabled() {
-			return config.asBoolean(enabledKey, true);
-		}
-		
-		public void enable(boolean enable) {
-			config.set(enabledKey, enable);
-		}
-		
-		public File file() {
-			return config.asFile(fileKey);
-		}
+    public class SoundOptions {
+        private SoundConfig wind = new SoundConfig(SOUND_WIND);
+        private SoundConfig tictac = new SoundConfig(SOUND_TICTAC);
+        private SoundConfig ding = new SoundConfig(SOUND_DING);
 
-		public void file(File file) {
-			config.set(fileKey, file);
-		}
-	}
+        public SoundConfig wind() {
+            return wind;
+        }
+
+        public SoundConfig tictac() {
+            return tictac;
+        }
+
+        public SoundConfig ding() {
+            return ding;
+        }
+    }
+
+    public class SoundConfig {
+        private String enabledKey;
+        private String fileKey;
+
+        public SoundConfig(String key) {
+            this.enabledKey = key + ".enabled";
+            this.fileKey = key + ".file";
+        }
+
+        public boolean enabled() {
+            return config.asBoolean(enabledKey, true);
+        }
+
+        public void enable(boolean enable) {
+            config.set(enabledKey, enable);
+        }
+
+        public File file() {
+            return config.asFile(fileKey);
+        }
+
+        public void file(File file) {
+            config.set(fileKey, file);
+        }
+    }
 
 }
