@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import org.tomighty.Phase;
 import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.config.Options;
 import org.tomighty.time.Time;
@@ -50,11 +49,6 @@ public class Break extends TimerSupport {
     protected Time initialTime() {
         int minutes = options.time().breakTime();
         return new Time(minutes);
-    }
-
-    @Override
-    protected Phase phase() {
-        return Phase.BREAK;
     }
 
     @Override

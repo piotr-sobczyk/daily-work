@@ -20,7 +20,6 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-import org.tomighty.Phase;
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.messages.timer.TimerFinished;
 import org.tomighty.bus.messages.timer.TimerInterrupted;
@@ -47,32 +46,32 @@ public class Timer {
     }
 
     public void setTime(Time time) {
-        state = new TimerState(time, Phase.BURST);
+        state = new TimerState(time);
     }
 
     public boolean isInProgress() {
         return state != null && !state.isEnded();
     }
 
-    public void start(Time initialTime, Phase phase) {
-        state = new TimerState(initialTime, phase);
+    public void start(Time initialTime) {
+        state = new TimerState(initialTime);
         scheduleTimer();
 
-        bus.publish(new TimerStarted(initialTime, phase));
+        bus.publish(new TimerStarted(initialTime));
     }
 
     private void finish() {
         cancelTimer();
         state.markEnded();
 
-        bus.publish(new TimerFinished(state.getPhase()));
+        bus.publish(new TimerFinished());
     }
 
     public void interrupt() {
         cancelTimer();
         state.markEnded();
 
-        bus.publish(new TimerInterrupted(state.getTime(), state.getPhase()));
+        bus.publish(new TimerInterrupted(state.getTime()));
     }
 
     public void pause() {
@@ -103,7 +102,7 @@ public class Timer {
     private void tick() {
         state.decreaseOneSecond();
 
-        bus.publish(new TimerTick(state.getTime(), state.getPhase()));
+        bus.publish(new TimerTick(state.getTime()));
 
         if(state.getTime().isZero())
             finish();

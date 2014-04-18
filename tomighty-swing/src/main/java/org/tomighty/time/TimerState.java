@@ -1,16 +1,12 @@
 package org.tomighty.time;
 
-import org.tomighty.Phase;
-
 class TimerState {
 
     private Time time;
-    private final Phase phase;
     private boolean ended;
 
-    public TimerState(Time time, Phase phase) {
+    public TimerState(Time time) {
         this.time = time;
-        this.phase = phase;
     }
 
     public void markEnded() {
@@ -27,10 +23,6 @@ class TimerState {
 
     public void setTime(Time time) {
         this.time = time;
-    }
-
-    public Phase getPhase() {
-        return phase;
     }
 
     public void decreaseOneSecond() {

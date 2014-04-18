@@ -16,13 +16,12 @@
 
 package org.tomighty.bus.messages.timer;
 
-import org.tomighty.Phase;
 import org.tomighty.time.Time;
 
 public class TimerTick extends TimerEvent {
 
-    public TimerTick(Time time, Phase phase) {
-        super(time, phase);
+    public TimerTick(Time time) {
+        super(time);
     }
 
 }

@@ -1,17 +1,16 @@
 package org.tomighty.time;
 
+import static junit.framework.Assert.assertEquals;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.tomighty.Phase;
 import org.tomighty.bus.messages.timer.TimerFinished;
 import org.tomighty.bus.messages.timer.TimerInterrupted;
 import org.tomighty.bus.messages.timer.TimerStarted;
 import org.tomighty.bus.messages.timer.TimerTick;
 import org.tomighty.mock.bus.MockBus;
-
-import java.util.List;
-
-import static junit.framework.Assert.*;
 
 public class TimerTest {
 
@@ -26,7 +25,7 @@ public class TimerTest {
 
     @Test(timeout = 5000)
     public void startTimerAndWaitToFinish() {
-        timer.start(Time.seconds(3), Phase.BURST);
+        timer.start(Time.seconds(3));
 
         List<Object> messages = bus.waitUntilNumberOfMessagesReach(5);
 
@@ -39,27 +38,22 @@ public class TimerTest {
 
         TimerStarted timerStarted = (TimerStarted) messages.get(0);
         assertEquals("Initial time", Time.seconds(3), timerStarted.getTime());
-        assertEquals("Phase when timer started", Phase.BURST, timerStarted.getPhase());
 
         TimerTick firstTick = (TimerTick) messages.get(1);
         assertEquals("First tick's time", Time.seconds(2), firstTick.getTime());
-        assertEquals("First tick's phase", Phase.BURST, firstTick.getPhase());
 
         TimerTick secondTick = (TimerTick) messages.get(2);
         assertEquals("Second tick's time", Time.seconds(1), secondTick.getTime());
-        assertEquals("Second tick's phase", Phase.BURST, secondTick.getPhase());
 
         TimerTick thirdTick = (TimerTick) messages.get(3);
         assertEquals("Third tick's time", Time.seconds(0), thirdTick.getTime());
-        assertEquals("Third tick's phase", Phase.BURST, thirdTick.getPhase());
 
         TimerFinished timerFinished = (TimerFinished) messages.get(4);
-        assertEquals("Phase when timer finished", Phase.BURST, timerFinished.getPhase());
     }
 
     @Test(timeout = 5000)
     public void startTimerAndInterruptAfterFirstTick() {
-        timer.start(Time.seconds(3), Phase.BREAK);
+        timer.start(Time.seconds(3));
 
         List<Object> messages = bus.waitUntilNumberOfMessagesReach(2);
 
@@ -72,15 +66,12 @@ public class TimerTest {
 
         TimerStarted timerStarted = (TimerStarted) messages.get(0);
         assertEquals("Initial time", Time.seconds(3), timerStarted.getTime());
-        assertEquals("Phase when timer started", Phase.BREAK, timerStarted.getPhase());
 
         TimerTick tick = (TimerTick) messages.get(1);
         assertEquals("Tick's time", Time.seconds(2), tick.getTime());
-        assertEquals("Tick's phase", Phase.BREAK, tick.getPhase());
 
         TimerInterrupted timerInterrupted = (TimerInterrupted) messages.get(2);
         assertEquals("Time when timer was interrupted", Time.seconds(2), timerInterrupted.getTime());
-        assertEquals("Phase when timer was interrupted", Phase.BREAK, timerInterrupted.getPhase());
     }
 
 }

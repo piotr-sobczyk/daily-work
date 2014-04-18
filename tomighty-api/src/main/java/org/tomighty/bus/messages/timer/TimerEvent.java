@@ -16,25 +16,18 @@
 
 package org.tomighty.bus.messages.timer;
 
-import org.tomighty.Phase;
 import org.tomighty.time.Time;
 
 public abstract class TimerEvent {
 
-	private final Time time;
-    private final Phase phase;
+    private final Time time;
 
-    protected TimerEvent(Time time, Phase phase) {
-		this.time = time;
-        this.phase = phase;
+    protected TimerEvent(Time time) {
+        this.time = time;
     }
 
-	public Time getTime() {
-		return time;
-	}
-
-    public Phase getPhase() {
-        return phase;
+    public Time getTime() {
+        return time;
     }
 
 }

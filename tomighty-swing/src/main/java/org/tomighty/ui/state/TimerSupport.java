@@ -24,15 +24,14 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JLabel;
 
-import org.tomighty.Phase;
 import org.tomighty.bus.Subscriber;
 import org.tomighty.bus.messages.timer.TimerFinished;
 import org.tomighty.bus.messages.timer.TimerTick;
 import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.sound.SoundPlayer;
 import org.tomighty.sound.Sounds;
-import org.tomighty.time.Timer;
 import org.tomighty.time.Time;
+import org.tomighty.time.Timer;
 import org.tomighty.ui.UiState;
 
 public abstract class TimerSupport extends UiStateSupport {
@@ -47,7 +46,6 @@ public abstract class TimerSupport extends UiStateSupport {
 	private EndTimer endTimer = new EndTimer();
 
 	protected abstract Time initialTime();
-    protected abstract Phase phase();
 	protected abstract Class<? extends UiState> finishedState();
 	protected abstract Class<? extends UiState> interruptedState();
 
@@ -70,7 +68,7 @@ public abstract class TimerSupport extends UiStateSupport {
             remainingTime.setText(timer.getTime().toString());
         } else {
             Time time = initialTime();
-            timer.start(time, phase());
+            timer.start(time);
             remainingTime.setText(time.toString());
         }
 

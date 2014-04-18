@@ -16,13 +16,12 @@
 
 package org.tomighty.bus.messages.timer;
 
-import org.tomighty.Phase;
 import org.tomighty.time.Time;
 
 public class TimerFinished extends TimerStopped {
 
-    public TimerFinished(Phase phase) {
-        super(Time.seconds(0), phase);
+    public TimerFinished() {
+        super(Time.seconds(0));
     }
 
 }
