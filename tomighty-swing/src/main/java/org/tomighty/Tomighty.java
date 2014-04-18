@@ -29,14 +29,19 @@ import org.slf4j.LoggerFactory;
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
 import org.tomighty.bus.messages.ui.ChangeUiState;
+import org.tomighty.bus.messages.ui.ProjectChanged;
 import org.tomighty.bus.messages.ui.TrayClick;
 import org.tomighty.bus.messages.ui.UiStateChanged;
 import org.tomighty.config.Directories;
 import org.tomighty.config.Options;
 import org.tomighty.inject.TomightyModule;
+import org.tomighty.projects.Project;
+import org.tomighty.time.Time;
+import org.tomighty.time.Timer;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.state.InitialState;
+import org.tomighty.ui.state.pomodoro.BurstPaused;
 import org.tomighty.ui.tray.TrayManager;
 
 import com.google.inject.Guice;
@@ -52,9 +57,13 @@ public class Tomighty implements Runnable {
     @Inject private Directories directories;
     private UiState currentState;
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Inject
+    private Timer timer;
 
-	public static void main(String[] args) throws Exception {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    private Project currentProject;
+
+    public static void main(String[] args) throws Exception {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		Injector injector = Guice.createInjector(new TomightyModule(), Jsr250.newJsr250Module());
 
 		Tomighty tomighty = injector.getInstance(Tomighty.class);
@@ -67,9 +76,10 @@ public class Tomighty implements Runnable {
 	public void initialize() {
 		bus.subscribe(new SwitchState(), ChangeUiState.class);
 		bus.subscribe(new ShowWindow(), TrayClick.class);
-	}
+        bus.subscribe(new ChangeProject(), ProjectChanged.class);
+    }
 
-	@Override
+    @Override
 	public void run() {
 		render(InitialState.class);
 	}
@@ -86,12 +96,37 @@ public class Tomighty implements Runnable {
             logger.error("Failed to render state: " + currentState, error);
 			return;
 		}
-		window.setComponent(component);
-		currentState.afterRendering();
-	}
+        window.setViewportView(component);
+        currentState.afterRendering();
+    }
 
-	private class SwitchState implements Subscriber<ChangeUiState> {
-		@Override
+    private class ChangeProject implements Subscriber<ProjectChanged> {
+        @Override
+        public void receive(ProjectChanged message) {
+            Project newProject = message.getNewProject();
+
+            if (newProject.equals(currentProject)) {
+                return;
+            }
+
+            window.setProjectName(newProject.getName());
+
+            if (currentProject != null) {
+                currentProject.updateTime(timer.getTime());
+            }
+
+            Time time = newProject.getTime();
+            timer.setTime(time);
+
+            timer.pause();
+
+            currentProject = newProject;
+            bus.publish(new ChangeUiState(BurstPaused.class));
+        }
+    }
+
+    private class SwitchState implements Subscriber<ChangeUiState> {
+        @Override
 		public void receive(final ChangeUiState message) {
 			invokeLater(new Runnable() {
 				@Override

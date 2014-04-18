@@ -46,6 +46,10 @@ public class Timer {
         return state.getTime();
     }
 
+    public void setTime(Time time) {
+        state = new TimerState(time, Phase.BURST);
+    }
+
     public boolean isInProgress() {
         return state != null && !state.isEnded();
     }
@@ -80,7 +84,9 @@ public class Timer {
     }
 
     private void cancelTimer() {
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
         isScheduled = false;
     }
 

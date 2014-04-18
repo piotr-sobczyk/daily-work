@@ -25,6 +25,10 @@ class TimerState {
         return time;
     }
 
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
     public Phase getPhase() {
         return phase;
     }

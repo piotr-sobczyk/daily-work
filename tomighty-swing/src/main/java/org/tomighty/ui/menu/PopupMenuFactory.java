@@ -1,5 +1,6 @@
 package org.tomighty.ui.menu;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.inject.Inject;
@@ -9,8 +10,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 
+import org.tomighty.bus.Bus;
+import org.tomighty.bus.messages.ui.ProjectChanged;
 import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
+import org.tomighty.projects.Project;
 
 import com.google.inject.Injector;
 
@@ -22,14 +26,18 @@ public class PopupMenuFactory {
     private Messages messages;
     @Inject
     private Projects projects;
+    @Inject
+    private Bus bus;
 
     public JPopupMenu create(Action[] items) {
         JPopupMenu menu = new JPopupMenu();
 
         ButtonGroup projectsGroup = new ButtonGroup();
-        for (String project : projects.getProjects()) {
-            JMenuItem item = new JRadioButtonMenuItem(project);
+        for (Project project : projects.getProjects()) {
+            JMenuItem item = new JRadioButtonMenuItem(project.getName());
+
             projectsGroup.add(item);
+            item.addActionListener(new SelectProject(project));
             menu.add(item);
         }
         menu.addSeparator();
@@ -59,4 +67,16 @@ public class PopupMenuFactory {
         return item;
     }
 
+    private class SelectProject implements ActionListener {
+        private Project project;
+
+        private SelectProject(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bus.publish(new ProjectChanged(project));
+        }
+    }
 }

@@ -8,6 +8,8 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.tomighty.projects.Project;
+
 public class Projects {
     @Inject
     private Directories directories;
@@ -23,8 +25,14 @@ public class Projects {
         properties = propertyStore.load(projectsFile);
     }
 
-    public List<String> getProjects() {
-        return new ArrayList<String>(properties.stringPropertyNames());
+    public List<Project> getProjects() {
+        List<Project> projects = new ArrayList<Project>();
+        for (String projectName : properties.stringPropertyNames()) {
+            int initialTimeMins = Integer.parseInt(properties.getProperty(projectName));
+            int initialTimeSecs = initialTimeMins * 60;
+            projects.add(new Project(projectName, initialTimeSecs));
+        }
+        return projects;
     }
 
     public int getTimeInMinutesForProject(String projectName) {

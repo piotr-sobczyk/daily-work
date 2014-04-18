@@ -17,7 +17,6 @@
 package org.tomighty.ui.state;
 
 import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.LINE_END;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 
@@ -29,7 +28,6 @@ import java.awt.LayoutManager;
 import javax.inject.Inject;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.tomighty.bus.Bus;
@@ -59,26 +57,14 @@ public abstract class UiStateSupport implements UiState {
 	protected abstract Component createContent();
 	protected abstract Action[] primaryActions();
 	protected abstract Action[] secondaryActions();
-	
-	protected boolean displaysGauge() {
-		return false;
-	}
+
+    protected boolean displaysGauge() {
+        return false;
+    }
 	
 	@Override
 	public final Component render() throws Exception {
-		JPanel component = createComponent();
-        JButton menuButton = menuButtonFactory.create(secondaryActions());
-        JPanel panel = createPanel();
-
-        JPanel topBar = createPanel();
-        JLabel projectLabel = labelFactory.medium("Project");
-        projectLabel.setHorizontalAlignment(JLabel.CENTER);
-        topBar.add(projectLabel, CENTER);
-        topBar.add(menuButton, LINE_END);
-
-        panel.add(topBar, NORTH);
-        panel.add(component, CENTER);
-        return panel;
+        return createComponent();
     }
 	
 	@Override

@@ -16,9 +16,13 @@
 
 package org.tomighty.ui;
 
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.LINE_END;
+import static java.awt.BorderLayout.NORTH;
 import static org.tomighty.ui.util.Geometry.offset;
 import static org.tomighty.ui.util.Geometry.opposite;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -28,111 +32,158 @@ import java.awt.event.WindowFocusListener;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.tomighty.config.Options;
 import org.tomighty.resources.Images;
 import org.tomighty.ui.location.Closest;
 import org.tomighty.ui.location.Location;
+import org.tomighty.ui.menu.MenuButtonFactory;
+import org.tomighty.ui.swing.laf.SexyLabel;
 import org.tomighty.ui.swing.laf.SexyPanelUI;
 
 @SuppressWarnings("serial")
 public class Window extends JFrame {
 
-	@Inject private Options options;
-	@Inject private Images images;
-	private JPanel panel = new JPanel();
-	private WindowDragger dragger = new WindowDragger();
-	private boolean gotRelocatedOnceAtLeast;
+    @Inject
+    private Options options;
+    @Inject
+    private Images images;
+    @Inject
+    private SexyLabel labelFactory;
+    @Inject
+    private MenuButtonFactory menuButtonFactory;
+    @Inject
+    private SexyPanelUI panelUI;
 
-	@Inject
-	public Window(SexyPanelUI panelUI) {
+    private JPanel panel;
+    private JPanel viewport;
+    private JLabel projectLabel;
+
+    private WindowDragger dragger = new WindowDragger();
+    private boolean gotRelocatedOnceAtLeast;
+
+    @Inject
+    public Window(SexyPanelUI panelUI) {
         super("Dialy Work");
-        panel.setUI(panelUI);
-		setAlwaysOnTop(true);
-		setContentPane(panel);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocation(100, 100);
-		setResizable(false);
-		setSize(180, 115);
-		setUndecorated(true);
-		addWindowFocusListener(new HideWindowWhenLosingFocus());
-		addMouseListener(dragger);
-		addMouseMotionListener(dragger);
-	}
+
+        setAlwaysOnTop(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocation(100, 100);
+        setResizable(false);
+        setSize(180, 115);
+        setUndecorated(true);
+        addWindowFocusListener(new HideWindowWhenLosingFocus());
+        addMouseListener(dragger);
+        addMouseMotionListener(dragger);
+    }
+
+    private JPanel createPanel() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setUI(panelUI);
+
+        viewport = new JPanel(new BorderLayout());
+        viewport.setOpaque(false);
+
+        JButton menuButton = menuButtonFactory.create(new Action[] { });
+
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setOpaque(false);
+        projectLabel = labelFactory.medium("Project");
+        projectLabel.setHorizontalAlignment(JLabel.CENTER);
+
+        topBar.add(projectLabel, CENTER);
+        topBar.add(menuButton, LINE_END);
+
+        mainPanel.add(topBar, NORTH);
+        mainPanel.add(viewport, CENTER);
+
+        return mainPanel;
+    }
 
     @PostConstruct
-	public void initialize() {
-		setIconImages(images.tomatoes());
-	}
+    public void initialize() {
+        panel = createPanel();
+        setContentPane(panel);
 
-	public void setComponent(Component component) {
-		panel.removeAll();
-		panel.add(component);
-	}
-	
-	public void show(Point mouseLocation) {
-		if(canRelocateWindow(mouseLocation)) {
-			Location location = Closest.location(mouseLocation);
-			Point point = location.determine(getSize());
-			setLocation(point);
-			gotRelocatedOnceAtLeast = true;
-		}
-		setVisible(true);
-	}
+        setIconImages(images.tomatoes());
+    }
 
-	private boolean canRelocateWindow(Point mouseLocation) {
-		if(options.ui().draggableWindow() && gotRelocatedOnceAtLeast) {
-			return false;
-		}
-		return mouseLocation != null;
-	}
-	
-	private class HideWindowWhenLosingFocus implements WindowFocusListener {
-		@Override
-		public void windowGainedFocus(WindowEvent e) {}
-		
-		@Override
-		public void windowLostFocus(WindowEvent e) {
-			if(options.ui().autoHideWindow()) {
-				setVisible(false);
-			}
-		}
-	}
-	
-	private class WindowDragger extends MouseAdapter {
-		
-		private Point clickLocation;
-		
-		@Override
-		public void mousePressed(MouseEvent e) {
-			if(leftClicked(e)) {
-				clickLocation = e.getPoint();
-			}
-		}
-		
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if(leftClicked(e)) {
-				clickLocation = null;
-			}
-		}
-		
-		@Override
-		public void mouseDragged(MouseEvent event) {
-			if(clickLocation == null || !options.ui().draggableWindow()) {
-				return;
-			}
-			Point mouseLocation = event.getLocationOnScreen();
+    public void setProjectName(String projectName) {
+        projectLabel.setText(projectName);
+    }
+
+    public void setViewportView(Component component) {
+        viewport.removeAll();
+        viewport.add(component);
+    }
+
+    public void show(Point mouseLocation) {
+        if (canRelocateWindow(mouseLocation)) {
+            Location location = Closest.location(mouseLocation);
+            Point point = location.determine(getSize());
+            setLocation(point);
+            gotRelocatedOnceAtLeast = true;
+        }
+        setVisible(true);
+    }
+
+    private boolean canRelocateWindow(Point mouseLocation) {
+        if (options.ui().draggableWindow() && gotRelocatedOnceAtLeast) {
+            return false;
+        }
+        return mouseLocation != null;
+    }
+
+    private class HideWindowWhenLosingFocus implements WindowFocusListener {
+        @Override
+        public void windowGainedFocus(WindowEvent e) {
+        }
+
+        @Override
+        public void windowLostFocus(WindowEvent e) {
+            if (options.ui().autoHideWindow()) {
+                setVisible(false);
+            }
+        }
+    }
+
+    private class WindowDragger extends MouseAdapter {
+
+        private Point clickLocation;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (leftClicked(e)) {
+                clickLocation = e.getPoint();
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (leftClicked(e)) {
+                clickLocation = null;
+            }
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent event) {
+            if (clickLocation == null || !options.ui().draggableWindow()) {
+                return;
+            }
+            Point mouseLocation = event.getLocationOnScreen();
             Point windowLocation = offset(opposite(clickLocation), mouseLocation);
-			setLocation(windowLocation);
-		}
+            setLocation(windowLocation);
+        }
 
-		private boolean leftClicked(MouseEvent e) {
-			return e.getButton() == MouseEvent.BUTTON1;
-		}
-		
-	}
-	
+        private boolean leftClicked(MouseEvent e) {
+            return e.getButton() == MouseEvent.BUTTON1;
+        }
+
+    }
+
 }
