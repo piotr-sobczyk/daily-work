@@ -48,7 +48,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.mycila.inject.jsr250.Jsr250;
 
-public class Tomighty implements Runnable {
+public class DialyWork implements Runnable {
 
     @Inject
     private Window window;
@@ -71,8 +71,8 @@ public class Tomighty implements Runnable {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         Injector injector = Guice.createInjector(new TomightyModule(), Jsr250.newJsr250Module());
 
-        Tomighty tomighty = injector.getInstance(Tomighty.class);
-        invokeLater(tomighty);
+        DialyWork dialyWork = injector.getInstance(DialyWork.class);
+        invokeLater(dialyWork);
         TrayManager trayManager = injector.getInstance(TrayManager.class);
         invokeLater(trayManager);
     }

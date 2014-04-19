@@ -99,7 +99,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.tomighty.Tomighty</mainClass>
+                            <mainClass>org.tomighty.DialyWork</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -111,7 +111,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.tomighty.Tomighty</mainClass>
+                            <mainClass>org.tomighty.DialyWork</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -201,7 +201,7 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -212,7 +212,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            
+
         </plugins>
     </build>
 
