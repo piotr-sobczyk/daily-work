@@ -24,6 +24,7 @@ import org.tomighty.config.Configuration;
 import org.tomighty.config.Options;
 import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
+import org.tomighty.projects.ProjectsManager;
 import org.tomighty.resources.cache.Caches;
 import org.tomighty.sound.SoundPlayer;
 import org.tomighty.sound.Sounds;
@@ -56,6 +57,8 @@ public class TomightyModule extends AbstractModule {
         bind(SoundPlayer.class).in(SINGLETON);
         bind(Caches.class).in(SINGLETON);
         bind(Look.class).in(SINGLETON);
+
+        bind(ProjectsManager.class).asEagerSingleton();
     }
 
 }
