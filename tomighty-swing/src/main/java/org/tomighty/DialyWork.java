@@ -33,7 +33,7 @@ import org.tomighty.bus.messages.ui.TrayClick;
 import org.tomighty.bus.messages.ui.UiStateChanged;
 import org.tomighty.config.Directories;
 import org.tomighty.config.Options;
-import org.tomighty.inject.TomightyModule;
+import org.tomighty.inject.DialyWorkModule;
 import org.tomighty.ui.UiState;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.state.InitialState;
@@ -60,7 +60,7 @@ public class DialyWork implements Runnable {
 
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        Injector injector = Guice.createInjector(new TomightyModule(), Jsr250.newJsr250Module());
+        Injector injector = Guice.createInjector(new DialyWorkModule(), Jsr250.newJsr250Module());
 
         DialyWork dialyWork = injector.getInstance(DialyWork.class);
         invokeLater(dialyWork);

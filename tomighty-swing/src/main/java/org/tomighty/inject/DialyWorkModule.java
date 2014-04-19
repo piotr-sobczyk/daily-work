@@ -38,7 +38,7 @@ import org.tomighty.ui.tray.TrayManager;
 
 import com.google.inject.AbstractModule;
 
-public class TomightyModule extends AbstractModule {
+public class DialyWorkModule extends AbstractModule {
 
     @Override
     protected void configure() {
