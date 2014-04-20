@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import org.tomighty.bus.Bus;
 import org.tomighty.i18n.Messages;
 import org.tomighty.ui.UiState;
-import org.tomighty.ui.menu.MenuButtonFactory;
 import org.tomighty.ui.swing.gauge.Gauge;
 import org.tomighty.ui.swing.laf.SexyArrowButtonUI;
 import org.tomighty.ui.swing.laf.SexyButtonUI;
@@ -44,78 +43,86 @@ import com.google.inject.Injector;
 
 public abstract class UiStateSupport implements UiState {
 
-	@Inject private Injector injector;
-	@Inject private SexyArrowButtonUI arrowButtonUI;
-	@Inject private Gauge gauge;
-    @Inject private MenuButtonFactory menuButtonFactory;
+    @Inject
+    private Injector injector;
+    @Inject
+    private SexyArrowButtonUI arrowButtonUI;
+    @Inject
+    private Gauge gauge;
 
-    @Inject protected SexyLabel labelFactory;
-	@Inject protected Bus bus;
-	@Inject protected Messages messages;
+    @Inject
+    protected SexyLabel labelFactory;
+    @Inject
+    protected Bus bus;
+    @Inject
+    protected Messages messages;
 
-	protected abstract String title();
-	protected abstract Component createContent();
-	protected abstract Action[] primaryActions();
-	protected abstract Action[] secondaryActions();
+    protected abstract String title();
+
+    protected abstract Component createContent();
+
+    protected abstract Action[] primaryActions();
+
+    protected abstract Action[] secondaryActions();
 
     protected boolean displaysGauge() {
         return false;
     }
-	
-	@Override
-	public final Component render() throws Exception {
+
+    @Override
+    public final Component render() throws Exception {
         return createComponent();
     }
-	
-	@Override
-	public Colors colors() {
-		return null;
-	}
-	
-	@Override
-	public void afterRendering() {
-	}
-	
-	@Override
-	public void beforeDetaching() {
-	}
-	
-	private JPanel createComponent() {
-		JPanel component = createPanel();
-		component.add(createHeader(), NORTH);
-		component.add(createContent(), CENTER);
-		component.add(createButtons(), SOUTH);
-		return component;
-	}
-	
-	private JPanel createHeader() {
-		JPanel panel = createPanel(new BorderLayout(0, 3));
-		String title = title();
-		if(title != null) {
-			panel.add(labelFactory.small(title), CENTER);
-		}
-		if(displaysGauge()) {
-			panel.add(gauge, SOUTH);
-		}
-		return panel;
-	}
-	
-	private Component createButtons() {
-		Action[] actions = primaryActions();
-		JPanel buttons = createPanel(new GridLayout(1, actions.length, 3, 0));
-		for(Action action : actions) {
-			injector.injectMembers(action);
-			JButton button = new JButton(action);
-			button.setOpaque(false);
-			button.setUI(SexyButtonUI.INSTANCE);
-			buttons.add(button);
-		}
-		return buttons;
-	}
 
-	private JPanel createPanel() {
-		return createPanel(new BorderLayout());
-	}
+    @Override
+    public Colors colors() {
+        return null;
+    }
+
+    @Override
+    public void afterRendering() {
+    }
+
+    @Override
+    public void beforeDetaching() {
+    }
+
+    private JPanel createComponent() {
+        JPanel component = createPanel();
+        component.add(createHeader(), NORTH);
+        component.add(createContent(), CENTER);
+        component.add(createButtons(), SOUTH);
+        return component;
+    }
+
+    private JPanel createHeader() {
+        JPanel panel = createPanel(new BorderLayout(0, 3));
+        String title = title();
+        if (title != null) {
+            panel.add(labelFactory.small(title), CENTER);
+        }
+        if (displaysGauge()) {
+            panel.add(gauge, SOUTH);
+        }
+        return panel;
+    }
+
+    private Component createButtons() {
+        Action[] actions = primaryActions();
+        JPanel buttons = createPanel(new GridLayout(1, actions.length, 3, 0));
+        for (Action action : actions) {
+            injector.injectMembers(action);
+            JButton button = new JButton(action);
+            button.setOpaque(false);
+            button.setUI(SexyButtonUI.INSTANCE);
+            buttons.add(button);
+        }
+        return buttons;
+    }
+
+    private JPanel createPanel() {
+        return createPanel(new BorderLayout());
+    }
 
     private static JPanel createPanel(LayoutManager layout) {
         JPanel panel = new JPanel(layout);

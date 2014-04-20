@@ -29,6 +29,7 @@ import org.tomighty.resources.cache.Caches;
 import org.tomighty.sound.SoundPlayer;
 import org.tomighty.sound.Sounds;
 import org.tomighty.time.Timer;
+import org.tomighty.ui.PopupMenu;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.swing.gauge.Gauge;
 import org.tomighty.ui.theme.Look;
@@ -57,6 +58,7 @@ public class DialyWorkModule extends AbstractModule {
         bind(SoundPlayer.class).in(SINGLETON);
         bind(Caches.class).in(SINGLETON);
         bind(Look.class).in(SINGLETON);
+        bind(PopupMenu.class).in(SINGLETON);
 
         bind(ProjectsManager.class).asEagerSingleton();
     }

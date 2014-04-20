@@ -1,4 +1,4 @@
-package org.tomighty.bus.messages.ui;
+package org.tomighty.bus.messages.projects;
 
 import org.tomighty.projects.Project;
 

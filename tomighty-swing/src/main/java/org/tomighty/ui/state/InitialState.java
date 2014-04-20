@@ -25,7 +25,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.tomighty.resources.Images;
-import org.tomighty.ui.state.bursts.Burst;
 
 public class InitialState extends UiStateSupport {
 
@@ -46,9 +45,7 @@ public class InitialState extends UiStateSupport {
 
     @Override
     protected Action[] primaryActions() {
-        return new Action[] {
-                new ToState(messages.get("Start burst"), Burst.class)
-        };
+        return new Action[] { };
     }
 
     @Override

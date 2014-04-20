@@ -32,7 +32,6 @@ import java.awt.event.WindowFocusListener;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -89,11 +88,11 @@ public class Window extends JFrame {
         viewport = new JPanel(new BorderLayout());
         viewport.setOpaque(false);
 
-        JButton menuButton = menuButtonFactory.create(new Action[] { });
+        JButton menuButton = menuButtonFactory.create();
 
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setOpaque(false);
-        projectLabel = labelFactory.medium("Project");
+        projectLabel = labelFactory.medium();
         projectLabel.setHorizontalAlignment(JLabel.CENTER);
 
         topBar.add(projectLabel, CENTER);

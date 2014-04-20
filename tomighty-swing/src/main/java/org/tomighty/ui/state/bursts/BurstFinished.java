@@ -17,18 +17,24 @@
 package org.tomighty.ui.state.bursts;
 
 import java.awt.Component;
+import java.awt.Image;
 
+import javax.inject.Inject;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
-import org.tomighty.ui.state.ToState;
+import org.tomighty.resources.Images;
 import org.tomighty.ui.state.UiStateSupport;
-import org.tomighty.ui.state.breaks.Break;
 
 public class BurstFinished extends UiStateSupport {
 
+    @Inject
+    private Images images;
+
     @Override
     protected String title() {
-        return messages.get("Burst finished");
+        return messages.get("Project finished");
     }
 
     @Override
@@ -38,20 +44,20 @@ public class BurstFinished extends UiStateSupport {
 
     @Override
     protected Component createContent() {
-        return labelFactory.medium(messages.get("What's next?"));
+        Image image = images.tomato();
+        ImageIcon imageIcon = new ImageIcon(image);
+        return new JLabel(imageIcon);
     }
 
     @Override
     protected Action[] primaryActions() {
         return new Action[] {
-                new ToState("New burst", Burst.class),
-                new ToState(messages.get("Break"), Break.class)
         };
     }
 
     @Override
     protected Action[] secondaryActions() {
-        return new Action[] { };
+        return null;
     }
 
 }

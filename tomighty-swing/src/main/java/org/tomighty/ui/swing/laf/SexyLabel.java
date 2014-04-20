@@ -22,35 +22,39 @@ import javax.inject.Inject;
 import javax.swing.JLabel;
 
 public class SexyLabel {
-	
-	@Inject
+
+    @Inject
     private SexyLabelUI labelUI;
-	
-	public JLabel small(String text) {
-		return create(11f, text);
-	}
 
-	public JLabel medium(String text) {
-		return create(19f, text);
-	}
-	
-	public JLabel big() {
-		return big(null);
-	}
+    public JLabel small(String text) {
+        return create(11f, text);
+    }
 
-	public JLabel big(String text) {
-		return create(38f, text);
-	}
+    public JLabel medium() {
+        return medium(null);
+    }
 
-	public JLabel create(float size, String text) {
-		JLabel label = new JLabel();
-		label.setUI(labelUI);
-		if (size > 0f) {
-			Font font = label.getFont();
-			label.setFont(font.deriveFont(size));
-		}
-		label.setText(text);
-		return label;
-	}
+    public JLabel medium(String text) {
+        return create(15f, text);
+    }
+
+    public JLabel big() {
+        return big(null);
+    }
+
+    public JLabel big(String text) {
+        return create(38f, text);
+    }
+
+    public JLabel create(float size, String text) {
+        JLabel label = new JLabel();
+        label.setUI(labelUI);
+        if (size > 0f) {
+            Font font = label.getFont();
+            label.setFont(font.deriveFont(size));
+        }
+        label.setText(text);
+        return label;
+    }
 
 }

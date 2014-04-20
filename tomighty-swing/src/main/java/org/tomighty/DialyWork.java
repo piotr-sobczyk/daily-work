@@ -55,7 +55,9 @@ public class DialyWork implements Runnable {
     private Injector injector;
     @Inject
     private Directories directories;
+
     private UiState currentState;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public static void main(String[] args) throws Exception {
