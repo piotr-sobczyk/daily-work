@@ -28,9 +28,8 @@ public class Projects {
     public List<Project> getProjects() {
         List<Project> projects = new ArrayList<Project>();
         for (String projectName : properties.stringPropertyNames()) {
-            int initialTimeMins = Integer.parseInt(properties.getProperty(projectName));
-            int initialTimeSecs = initialTimeMins * 60;
-            projects.add(new Project(projectName, initialTimeSecs));
+            int dialyTimeMins = Integer.parseInt(properties.getProperty(projectName));
+            projects.add(new Project(projectName, dialyTimeMins));
         }
         return projects;
     }

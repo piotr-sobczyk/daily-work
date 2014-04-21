@@ -6,14 +6,15 @@ import javax.inject.Inject;
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
 import org.tomighty.bus.messages.projects.ProjectChanged;
+import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.bus.messages.timer.TimerFinished;
+import org.tomighty.bus.messages.timer.TimerTick;
 import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.time.Time;
 import org.tomighty.time.Timer;
 import org.tomighty.ui.PopupMenu;
 import org.tomighty.ui.Window;
 import org.tomighty.ui.state.bursts.BurstPaused;
-import org.tomighty.util.VisibleForTesting;
 
 public class ProjectsManager {
 
@@ -35,12 +36,24 @@ public class ProjectsManager {
     public void initialize() {
         bus.subscribe(new ChangeProject(), ProjectChanged.class);
         bus.subscribe(new FinishProject(), TimerFinished.class);
+        bus.subscribe(new UpdateTime(), TimerTick.class);
 
         window.setProjectName(INITIAL_PROJECT_NAME);
     }
 
-    @VisibleForTesting
-    static String normalizeProjectName(String projectName) {
+    private class UpdateTime implements Subscriber<TimerTick> {
+        @Override
+        public void receive(TimerTick tick) {
+            final Time time = tick.getTime();
+            if (currentProject != null) {
+                currentProject.updateTime(time);
+                bus.publish(new ProjectTimeChanged(currentProject));
+            }
+        }
+    }
+
+    //TODO: extract it
+    public static String normalizeProjectName(String projectName) {
         if (projectName.length() > PROJECT_NAME_TRIM_THRESHOLD) {
             return projectName.substring(0, PROJECT_NAME_TRIM_THRESHOLD) + "...";
         }
@@ -60,12 +73,13 @@ public class ProjectsManager {
     private class FinishProject implements Subscriber<TimerFinished> {
         @Override
         public void receive(TimerFinished message) {
+            currentProject.markFinished();
             popupMenu.markProjectAsFinished(currentProject);
         }
     }
 
     private void projectChange(Project newProject) {
-        updateProject(newProject);
+        currentProject = newProject;
         updateTimer(newProject);
 
         bus.publish(new ChangeUiState(BurstPaused.class));
@@ -77,13 +91,6 @@ public class ProjectsManager {
         Time time = newProject.getTime();
         timer.setTime(time);
         timer.pause();
-    }
-
-    private void updateProject(Project newProject) {
-        if (currentProject != null) {
-            currentProject.updateTime(timer.getTime());
-        }
-        currentProject = newProject;
     }
 
 }

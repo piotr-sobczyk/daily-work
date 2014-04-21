@@ -5,14 +5,26 @@ import org.tomighty.time.Time;
 public class Project {
     private String name;
     private Time time;
+    private Time totalDialyTime;
+    private boolean isFinished;
 
-    public Project(String name, int time) {
+    public Project(String name, int timeMins) {
         this.name = name;
-        this.time = new Time(0, time);
+
+        time = new Time(timeMins);
+        totalDialyTime = time;
+    }
+
+    public void markFinished() {
+        isFinished = true;
     }
 
     public void updateTime(Time time) {
         this.time = time;
+    }
+
+    public Time getTotalDialyTime() {
+        return totalDialyTime;
     }
 
     public Time getTime() {
@@ -21,6 +33,10 @@ public class Project {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 
     @Override

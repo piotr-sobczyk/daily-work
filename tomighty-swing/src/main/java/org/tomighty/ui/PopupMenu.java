@@ -11,13 +11,17 @@ import javax.swing.ButtonGroup;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingUtilities;
 
 import org.tomighty.bus.Bus;
+import org.tomighty.bus.Subscriber;
 import org.tomighty.bus.messages.projects.ProjectChanged;
+import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
 import org.tomighty.projects.Project;
+import org.tomighty.projects.ProjectsManager;
 import org.tomighty.ui.menu.Exit;
 import org.tomighty.ui.menu.ShowOptions;
 import org.tomighty.ui.state.InitialState;
@@ -42,15 +46,45 @@ public class PopupMenu {
     @PostConstruct
     public void initialize() {
         popupMenu = create();
+        bus.subscribe(new ProjectTimeChangedHandler(), ProjectTimeChanged.class);
+    }
+
+    private class ProjectTimeChangedHandler implements Subscriber<ProjectTimeChanged> {
+        @Override
+        public void receive(ProjectTimeChanged message) {
+            updateProjectTimes();
+        }
     }
 
     public JPopupMenu getPopupMenu() {
         return popupMenu;
     }
 
+    private String projectMenuItemLabel(Project project) {
+        String label = ProjectsManager.normalizeProjectName(project.getName());
+        return String.format("(%s/%s) %s", project.getTime(), project.getTotalDialyTime(), label);
+    }
+
+    public void updateProjectTimes() {
+        for (final Project project : projectMenuItems.keySet()) {
+            if (project.isFinished()) {
+                continue;
+            }
+
+            final JMenuItem menuItem = projectMenuItems.get(project);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    menuItem.setText(projectMenuItemLabel(project));
+                    menuItem.repaint();
+                }
+            });
+        }
+    }
+
     public void markProjectAsFinished(Project project) {
         JMenuItem menuItem = projectMenuItems.get(project);
-        String text = "<html><strike>" + project.getName() + "</strike></html>";
+        String text = "<html><strike>" + projectMenuItemLabel(project) + "</strike></html>";
         menuItem.setEnabled(false);
         menuItem.setText(text);
     }
@@ -65,16 +99,6 @@ public class PopupMenu {
             menu.add(item);
         }
         menu.addSeparator();
-
-        //        if (items != null && items.length > 0) {
-        //            for (Action action : items) {
-        //                injector.injectMembers(action);
-        //                JMenuItem item = new JMenuItem(action);
-        //                menu.add(item);
-        //            }
-        //
-        //            menu.addSeparator();
-        //        }
 
         menu.add(menuItem("Options", injector.getInstance(ShowOptions.class)));
         //TODO: prepare new About page
@@ -97,7 +121,7 @@ public class PopupMenu {
     }
 
     private JMenuItem createProjectMenuItem(ButtonGroup projectsGroup, Project project) {
-        JMenuItem item = new JRadioButtonMenuItem(project.getName());
+        JMenuItem item = new JRadioButtonMenuItem(projectMenuItemLabel(project));
         projectsGroup.add(item);
         item.addActionListener(new SelectProject(project));
         return item;
