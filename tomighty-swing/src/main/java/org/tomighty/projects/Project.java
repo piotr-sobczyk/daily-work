@@ -5,14 +5,23 @@ import org.tomighty.time.Time;
 public class Project {
     private String name;
     private Time time;
-    private Time totalDialyTime;
+    private Time totalDailyTime;
     private boolean isFinished;
+
+    private static final int DISPLAY_NAME_TRIM_THRESHOLD = 18;
 
     public Project(String name, int timeMins) {
         this.name = name;
 
         time = new Time(timeMins);
-        totalDialyTime = time;
+        totalDailyTime = time;
+    }
+
+    public String getDisplayName() {
+        if (name.length() > DISPLAY_NAME_TRIM_THRESHOLD) {
+            return name.substring(0, DISPLAY_NAME_TRIM_THRESHOLD) + "...";
+        }
+        return name;
     }
 
     public void markFinished() {
@@ -23,8 +32,8 @@ public class Project {
         this.time = time;
     }
 
-    public Time getTotalDialyTime() {
-        return totalDialyTime;
+    public Time getTotalDailyTime() {
+        return totalDailyTime;
     }
 
     public Time getTime() {

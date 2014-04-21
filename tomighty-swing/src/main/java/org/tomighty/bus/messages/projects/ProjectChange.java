@@ -2,11 +2,11 @@ package org.tomighty.bus.messages.projects;
 
 import org.tomighty.projects.Project;
 
-public class ProjectChanged {
+public class ProjectChange {
 
     private Project newProject;
 
-    public ProjectChanged(Project newProject) {
+    public ProjectChange(Project newProject) {
         this.newProject = newProject;
     }
 

@@ -15,16 +15,13 @@ import javax.swing.SwingUtilities;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.projects.ProjectChanged;
+import org.tomighty.bus.messages.projects.ProjectChange;
 import org.tomighty.bus.messages.projects.ProjectTimeChanged;
-import org.tomighty.bus.messages.ui.ChangeUiState;
 import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
 import org.tomighty.projects.Project;
-import org.tomighty.projects.ProjectsManager;
 import org.tomighty.ui.menu.Exit;
 import org.tomighty.ui.menu.ShowOptions;
-import org.tomighty.ui.state.InitialState;
 
 import com.google.inject.Injector;
 
@@ -45,7 +42,7 @@ public class PopupMenu {
 
     @PostConstruct
     public void initialize() {
-        popupMenu = create();
+        popupMenu = createComponent();
         bus.subscribe(new ProjectTimeChangedHandler(), ProjectTimeChanged.class);
     }
 
@@ -61,8 +58,7 @@ public class PopupMenu {
     }
 
     private String projectMenuItemLabel(Project project) {
-        String label = ProjectsManager.normalizeProjectName(project.getName());
-        return String.format("(%s/%s) %s", project.getTime(), project.getTotalDialyTime(), label);
+        return String.format("(%s/%s) %s", project.getTime(), project.getTotalDailyTime(), project.getDisplayName());
     }
 
     public void updateProjectTimes() {
@@ -89,12 +85,12 @@ public class PopupMenu {
         menuItem.setText(text);
     }
 
-    private JPopupMenu create() {
+    private JPopupMenu createComponent() {
         JPopupMenu menu = new JPopupMenu();
 
         ButtonGroup projectsGroup = new ButtonGroup();
         for (Project project : projects.getProjects()) {
-            JMenuItem item = createProjectMenuItem(projectsGroup, project);
+            JMenuItem item = projectMenuItem(projectsGroup, project);
             projectMenuItems.put(project, item);
             menu.add(item);
         }
@@ -104,23 +100,13 @@ public class PopupMenu {
         //TODO: prepare new About page
         //menu.add(menuItem("About", injector.getInstance(ShowAboutWindow.class)));
 
-        //TODO: Development productivity hack, remove on production
-        menu.addSeparator();
-        menu.add(menuItem("Reload", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                injector.getInstance(Window.class).initialize();
-                injector.getInstance(Bus.class).publish(new ChangeUiState(InitialState.class));
-            }
-        }));
-
         menu.addSeparator();
         menu.add(menuItem("Close", new Exit()));
 
         return menu;
     }
 
-    private JMenuItem createProjectMenuItem(ButtonGroup projectsGroup, Project project) {
+    private JMenuItem projectMenuItem(ButtonGroup projectsGroup, Project project) {
         JMenuItem item = new JRadioButtonMenuItem(projectMenuItemLabel(project));
         projectsGroup.add(item);
         item.addActionListener(new SelectProject(project));
@@ -142,7 +128,7 @@ public class PopupMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            bus.publish(new ProjectChanged(project));
+            bus.publish(new ProjectChange(project));
         }
     }
 

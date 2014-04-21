@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.projects.ProjectChanged;
+import org.tomighty.bus.messages.projects.ProjectChange;
 import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.bus.messages.timer.TimerFinished;
 import org.tomighty.bus.messages.timer.TimerTick;
@@ -30,11 +30,10 @@ public class ProjectsManager {
     private Project currentProject;
 
     public static final String INITIAL_PROJECT_NAME = "Select a project";
-    private static final int PROJECT_NAME_TRIM_THRESHOLD = 18;
 
     @PostConstruct
     public void initialize() {
-        bus.subscribe(new ChangeProject(), ProjectChanged.class);
+        bus.subscribe(new ChangeProject(), ProjectChange.class);
         bus.subscribe(new FinishProject(), TimerFinished.class);
         bus.subscribe(new UpdateTime(), TimerTick.class);
 
@@ -52,20 +51,12 @@ public class ProjectsManager {
         }
     }
 
-    //TODO: extract it
-    public static String normalizeProjectName(String projectName) {
-        if (projectName.length() > PROJECT_NAME_TRIM_THRESHOLD) {
-            return projectName.substring(0, PROJECT_NAME_TRIM_THRESHOLD) + "...";
-        }
-        return projectName;
-    }
-
-    private class ChangeProject implements Subscriber<ProjectChanged> {
+    private class ChangeProject implements Subscriber<ProjectChange> {
         @Override
-        public void receive(ProjectChanged message) {
+        public void receive(ProjectChange message) {
             Project newProject = message.getNewProject();
             if (!newProject.equals(currentProject)) {
-                projectChange(newProject);
+                changeProject(newProject);
             }
         }
     }
@@ -78,13 +69,12 @@ public class ProjectsManager {
         }
     }
 
-    private void projectChange(Project newProject) {
+    private void changeProject(Project newProject) {
         currentProject = newProject;
         updateTimer(newProject);
 
         bus.publish(new ChangeUiState(BurstPaused.class));
-        String projectDisplayName = normalizeProjectName(newProject.getName());
-        window.setProjectName(projectDisplayName);
+        window.setProjectName(newProject.getDisplayName());
     }
 
     private void updateTimer(Project newProject) {
