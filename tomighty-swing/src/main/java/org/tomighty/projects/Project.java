@@ -1,5 +1,6 @@
 package org.tomighty.projects;
 
+import org.tomighty.bus.Bus;
 import org.tomighty.time.Time;
 
 public class Project {
@@ -8,10 +9,13 @@ public class Project {
     private Time totalDailyTime;
     private boolean isFinished;
 
+    private Bus eventBus;
+
     private static final int DISPLAY_NAME_TRIM_THRESHOLD = 18;
 
-    public Project(String name, int timeMins) {
+    public Project(String name, int timeMins, Bus eventBus) {
         this.name = name;
+        this.eventBus = eventBus;
 
         time = new Time(timeMins);
         totalDailyTime = time;
@@ -30,6 +34,8 @@ public class Project {
 
     public void updateTime(Time time) {
         this.time = time;
+
+        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
     }
 
     public Time getTotalDailyTime() {
@@ -70,4 +76,17 @@ public class Project {
     public String toString() {
         return name;
     }
+
+    private static class Updated extends ModelNotification<Project> {
+
+        private enum ChangeType {
+            STATUS, TIME
+        }
+
+        private Updated(Project model, ChangeType changeType) {
+            super(model, changeType);
+        }
+
+    }
+
 }

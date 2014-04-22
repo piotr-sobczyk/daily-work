@@ -1,7 +1,8 @@
 package org.tomighty.ui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,11 @@ import javax.swing.SwingUtilities;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.projects.ProjectChange;
 import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
 import org.tomighty.projects.Project;
+import org.tomighty.projects.ProjectsManager;
 import org.tomighty.ui.menu.Exit;
 import org.tomighty.ui.menu.ShowOptions;
 
@@ -35,6 +36,9 @@ public class PopupMenu {
     private Projects projects;
     @Inject
     private Bus bus;
+    @Inject
+    private ProjectsManager projectsManager;
+
 
     private JPopupMenu popupMenu;
 
@@ -55,10 +59,6 @@ public class PopupMenu {
 
     public JPopupMenu getPopupMenu() {
         return popupMenu;
-    }
-
-    private String projectMenuItemLabel(Project project) {
-        return String.format("(%s/%s) %s", project.getTime(), project.getTotalDailyTime(), project.getDisplayName());
     }
 
     public void updateProjectTimes() {
@@ -106,10 +106,23 @@ public class PopupMenu {
         return menu;
     }
 
-    private JMenuItem projectMenuItem(ButtonGroup projectsGroup, Project project) {
-        JMenuItem item = new JRadioButtonMenuItem(projectMenuItemLabel(project));
+    private String projectMenuItemLabel(Project project) {
+        return String.format("(%s/%s) %s", project.getTime(), project.getTotalDailyTime(), project.getDisplayName());
+    }
+
+    private JMenuItem projectMenuItem(final ButtonGroup projectsGroup, final Project project) {
+        final JRadioButtonMenuItem item = new JRadioButtonMenuItem(projectMenuItemLabel(project));
         projectsGroup.add(item);
-        item.addActionListener(new SelectProject(project));
+
+        item.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    projectsManager.changeProject(project);
+                }
+            }
+        });
+
         return item;
     }
 
@@ -117,19 +130,6 @@ public class PopupMenu {
         JMenuItem item = new JMenuItem(messages.get(text));
         item.addActionListener(listener);
         return item;
-    }
-
-    private class SelectProject implements ActionListener {
-        private Project project;
-
-        private SelectProject(Project project) {
-            this.project = project;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            bus.publish(new ProjectChange(project));
-        }
     }
 
 }

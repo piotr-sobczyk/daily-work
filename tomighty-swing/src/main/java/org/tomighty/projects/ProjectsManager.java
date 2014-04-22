@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.projects.ProjectChange;
 import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.bus.messages.timer.TimerFinished;
 import org.tomighty.bus.messages.timer.TimerTick;
@@ -33,7 +32,6 @@ public class ProjectsManager {
 
     @PostConstruct
     public void initialize() {
-        bus.subscribe(new ChangeProject(), ProjectChange.class);
         bus.subscribe(new FinishProject(), TimerFinished.class);
         bus.subscribe(new UpdateTime(), TimerTick.class);
 
@@ -51,16 +49,6 @@ public class ProjectsManager {
         }
     }
 
-    private class ChangeProject implements Subscriber<ProjectChange> {
-        @Override
-        public void receive(ProjectChange message) {
-            Project newProject = message.getNewProject();
-            if (!newProject.equals(currentProject)) {
-                changeProject(newProject);
-            }
-        }
-    }
-
     private class FinishProject implements Subscriber<TimerFinished> {
         @Override
         public void receive(TimerFinished message) {
@@ -69,7 +57,7 @@ public class ProjectsManager {
         }
     }
 
-    private void changeProject(Project newProject) {
+    public void changeProject(Project newProject) {
         currentProject = newProject;
         updateTimer(newProject);
 

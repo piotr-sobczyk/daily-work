@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.tomighty.bus.Bus;
 import org.tomighty.projects.Project;
 
 public class Projects {
@@ -15,6 +16,8 @@ public class Projects {
     private Directories directories;
     @Inject
     private PropertyStore propertyStore;
+    @Inject
+    private Bus bus;
 
     private File projectsFile;
     private Properties properties;
@@ -29,7 +32,7 @@ public class Projects {
         List<Project> projects = new ArrayList<Project>();
         for (String projectName : properties.stringPropertyNames()) {
             int dialyTimeMins = Integer.parseInt(properties.getProperty(projectName));
-            projects.add(new Project(projectName, dialyTimeMins));
+            projects.add(new Project(projectName, dialyTimeMins, bus));
         }
         return projects;
     }
