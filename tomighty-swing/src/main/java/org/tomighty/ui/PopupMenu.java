@@ -16,7 +16,6 @@ import javax.swing.SwingUtilities;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.config.Projects;
 import org.tomighty.i18n.Messages;
 import org.tomighty.projects.Project;
@@ -47,42 +46,44 @@ public class PopupMenu {
     @PostConstruct
     public void initialize() {
         popupMenu = createComponent();
-        bus.subscribe(new ProjectTimeChangedHandler(), ProjectTimeChanged.class);
+        bus.subscribe(new ProjectListener(), Project.Updated.class);
     }
 
-    private class ProjectTimeChangedHandler implements Subscriber<ProjectTimeChanged> {
+    private class ProjectListener implements Subscriber<Project.Updated> {
         @Override
-        public void receive(ProjectTimeChanged message) {
-            updateProjectTimes();
+        public void receive(Project.Updated update) {
+            Object changeType = update.getChangeType();
+            Project model = update.getModel();
+
+            if (changeType == Project.Updated.ChangeType.TIME) {
+                updateProjectTime(model);
+            } else if (changeType == Project.Updated.ChangeType.STATUS) {
+                projectStatusChanged(model);
+            }
+        }
+    }
+
+    public void updateProjectTime(final Project project) {
+        final JMenuItem menuItem = projectMenuItems.get(project);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                menuItem.setText(projectMenuItemLabel(project));
+            }
+        });
+    }
+
+    private void projectStatusChanged(Project project) {
+        if (project.isFinished()) {
+            JMenuItem menuItem = projectMenuItems.get(project);
+            String text = "<html><strike>" + projectMenuItemLabel(project) + "</strike></html>";
+            menuItem.setEnabled(false);
+            menuItem.setText(text);
         }
     }
 
     public JPopupMenu getPopupMenu() {
         return popupMenu;
-    }
-
-    public void updateProjectTimes() {
-        for (final Project project : projectMenuItems.keySet()) {
-            if (project.isFinished()) {
-                continue;
-            }
-
-            final JMenuItem menuItem = projectMenuItems.get(project);
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    menuItem.setText(projectMenuItemLabel(project));
-                    menuItem.repaint();
-                }
-            });
-        }
-    }
-
-    public void markProjectAsFinished(Project project) {
-        JMenuItem menuItem = projectMenuItems.get(project);
-        String text = "<html><strike>" + projectMenuItemLabel(project) + "</strike></html>";
-        menuItem.setEnabled(false);
-        menuItem.setText(text);
     }
 
     private JPopupMenu createComponent() {

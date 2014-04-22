@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.projects.ProjectTimeChanged;
 import org.tomighty.bus.messages.timer.TimerFinished;
 import org.tomighty.bus.messages.timer.TimerTick;
 import org.tomighty.bus.messages.ui.ChangeUiState;
@@ -44,7 +43,6 @@ public class ProjectsManager {
             final Time time = tick.getTime();
             if (currentProject != null) {
                 currentProject.updateTime(time);
-                bus.publish(new ProjectTimeChanged(currentProject));
             }
         }
     }
@@ -53,7 +51,6 @@ public class ProjectsManager {
         @Override
         public void receive(TimerFinished message) {
             currentProject.markFinished();
-            popupMenu.markProjectAsFinished(currentProject);
         }
     }
 

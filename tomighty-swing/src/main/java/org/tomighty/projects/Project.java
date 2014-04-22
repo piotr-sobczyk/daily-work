@@ -30,6 +30,8 @@ public class Project {
 
     public void markFinished() {
         isFinished = true;
+
+        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
     }
 
     public void updateTime(Time time) {
@@ -77,9 +79,9 @@ public class Project {
         return name;
     }
 
-    private static class Updated extends ModelNotification<Project> {
+    public static class Updated extends ModelNotification<Project> {
 
-        private enum ChangeType {
+        public enum ChangeType {
             STATUS, TIME
         }
 
