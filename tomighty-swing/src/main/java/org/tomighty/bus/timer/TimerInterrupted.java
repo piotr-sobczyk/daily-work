@@ -14,13 +14,13 @@
  *     limitations under the License.
  */
 
-package org.tomighty.bus.messages.timer;
+package org.tomighty.bus.timer;
 
 import org.tomighty.time.Time;
 
-public class TimerTick extends TimerEvent {
+public class TimerInterrupted extends TimerStopped {
 
-    public TimerTick(Time time) {
+    public TimerInterrupted(Time time) {
         super(time);
     }
 

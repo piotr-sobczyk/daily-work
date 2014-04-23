@@ -52,34 +52,28 @@ public class PopupMenu {
     private class ProjectListener implements Subscriber<Project.Updated> {
         @Override
         public void receive(Project.Updated update) {
-            Object changeType = update.getChangeType();
-            Project model = update.getModel();
-
-            if (changeType == Project.Updated.ChangeType.TIME) {
-                updateProjectTime(model);
-            } else if (changeType == Project.Updated.ChangeType.STATUS) {
-                projectStatusChanged(model);
-            }
+            updateMenuItemForProject(update.getModel());
         }
     }
 
-    public void updateProjectTime(final Project project) {
+    private void updateMenuItemForProject(final Project project) {
+        String prefix = "";
+        String suffix = "";
+        if (project.isFinished()) {
+            prefix = "<html><strike>";
+            suffix = "</strike></html>";
+        }
+
         final JMenuItem menuItem = projectMenuItems.get(project);
+        final String text = prefix + projectMenuItemLabel(project) + suffix;
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                menuItem.setText(projectMenuItemLabel(project));
+                menuItem.setText(text);
+                menuItem.setEnabled(!project.isFinished());
             }
         });
-    }
-
-    private void projectStatusChanged(Project project) {
-        if (project.isFinished()) {
-            JMenuItem menuItem = projectMenuItems.get(project);
-            String text = "<html><strike>" + projectMenuItemLabel(project) + "</strike></html>";
-            menuItem.setEnabled(false);
-            menuItem.setText(text);
-        }
     }
 
     public JPopupMenu getPopupMenu() {

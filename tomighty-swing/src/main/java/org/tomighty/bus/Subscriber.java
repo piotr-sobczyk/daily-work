@@ -14,14 +14,10 @@
  *     limitations under the License.
  */
 
-package org.tomighty.bus.messages.timer;
+package org.tomighty.bus;
 
-import org.tomighty.time.Time;
+public interface Subscriber<T> {
 
-public class TimerFinished extends TimerStopped {
-
-    public TimerFinished() {
-        super(Time.seconds(0));
-    }
+    void receive(T message);
 
 }

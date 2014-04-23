@@ -14,10 +14,14 @@
  *     limitations under the License.
  */
 
-package org.tomighty.bus;
+package org.tomighty.bus.timer;
 
-public interface Subscriber<T> {
+import org.tomighty.time.Time;
 
-	void receive(T message);
-	
+public class TimerTick extends TimerEvent {
+
+    public TimerTick(Time time) {
+        super(time);
+    }
+
 }

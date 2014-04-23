@@ -25,9 +25,9 @@ import javax.inject.Inject;
 import javax.swing.JLabel;
 
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.timer.TimerFinished;
-import org.tomighty.bus.messages.timer.TimerTick;
 import org.tomighty.bus.messages.ui.ChangeUiState;
+import org.tomighty.bus.timer.TimerFinished;
+import org.tomighty.bus.timer.TimerTick;
 import org.tomighty.sound.SoundPlayer;
 import org.tomighty.sound.Sounds;
 import org.tomighty.time.Time;
@@ -40,29 +40,32 @@ public abstract class TimerSupport extends UiStateSupport {
     protected Timer timer;
     @Inject
     private Sounds sounds;
-    @Inject private SoundPlayer soundPlayer;
-	private JLabel remainingTime;
-	private UpdateTime updateTime = new UpdateTime();
-	private EndTimer endTimer = new EndTimer();
+    @Inject
+    private SoundPlayer soundPlayer;
+    private JLabel remainingTime;
+    private UpdateTime updateTime = new UpdateTime();
+    private EndTimer endTimer = new EndTimer();
 
-	protected abstract Time initialTime();
-	protected abstract Class<? extends UiState> finishedState();
-	protected abstract Class<? extends UiState> interruptedState();
+    protected abstract Time initialTime();
+
+    protected abstract Class<? extends UiState> finishedState();
+
+    protected abstract Class<? extends UiState> interruptedState();
 
     @PostConstruct
-	public void initialize() {
-		bus.subscribe(updateTime, TimerTick.class);
-		bus.subscribe(endTimer, TimerFinished.class);
-	}
-	
-	@Override
-	protected Component createContent() {
-		remainingTime = labelFactory.big();
-		return remainingTime;
-	}
-	
-	@Override
-	public void afterRendering() {
+    public void initialize() {
+        bus.subscribe(updateTime, TimerTick.class);
+        bus.subscribe(endTimer, TimerFinished.class);
+    }
+
+    @Override
+    protected Component createContent() {
+        remainingTime = labelFactory.big();
+        return remainingTime;
+    }
+
+    @Override
+    public void afterRendering() {
         if (timer.isInProgress()) {
             timer.resume();
             remainingTime.setText(timer.getTime().toString());
@@ -76,31 +79,31 @@ public abstract class TimerSupport extends UiStateSupport {
     }
 
     @Override
-	public void beforeDetaching() {
-		soundPlayer.stop(sounds.tictac());
-		bus.unsubscribe(updateTime, TimerTick.class);
-		bus.unsubscribe(endTimer, TimerFinished.class);
-	}
+    public void beforeDetaching() {
+        soundPlayer.stop(sounds.tictac());
+        bus.unsubscribe(updateTime, TimerTick.class);
+        bus.unsubscribe(endTimer, TimerFinished.class);
+    }
 
-	private class UpdateTime implements Subscriber<TimerTick> {
-		@Override
-		public void receive(TimerTick tick) {
-			final Time time = tick.getTime();
-			invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					remainingTime.setText(time.toString());
-				}
-			});
-		}
-	}
-	
-	private class EndTimer implements Subscriber<TimerFinished> {
-		@Override
-		public void receive(TimerFinished end) {
-			soundPlayer.play(sounds.ding());
-			bus.publish(new ChangeUiState(finishedState()));
-		}
-	}
+    private class UpdateTime implements Subscriber<TimerTick> {
+        @Override
+        public void receive(TimerTick tick) {
+            final Time time = tick.getTime();
+            invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    remainingTime.setText(time.toString());
+                }
+            });
+        }
+    }
+
+    private class EndTimer implements Subscriber<TimerFinished> {
+        @Override
+        public void receive(TimerFinished end) {
+            soundPlayer.play(sounds.ding());
+            bus.publish(new ChangeUiState(finishedState()));
+        }
+    }
 
 }

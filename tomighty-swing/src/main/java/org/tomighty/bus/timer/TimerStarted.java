@@ -1,4 +1,4 @@
-package org.tomighty.bus.messages.timer;
+package org.tomighty.bus.timer;
 
 import org.tomighty.time.Time;
 

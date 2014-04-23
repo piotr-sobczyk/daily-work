@@ -14,20 +14,14 @@
  *     limitations under the License.
  */
 
-package org.tomighty.bus.messages.timer;
+package org.tomighty.bus.timer;
 
 import org.tomighty.time.Time;
 
-public abstract class TimerEvent {
+public abstract class TimerStopped extends TimerEvent {
 
-    private final Time time;
-
-    protected TimerEvent(Time time) {
-        this.time = time;
-    }
-
-    public Time getTime() {
-        return time;
+    protected TimerStopped(Time time) {
+        super(time);
     }
 
 }

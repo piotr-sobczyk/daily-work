@@ -5,9 +5,9 @@ import javax.inject.Inject;
 
 import org.tomighty.bus.Bus;
 import org.tomighty.bus.Subscriber;
-import org.tomighty.bus.messages.timer.TimerFinished;
-import org.tomighty.bus.messages.timer.TimerTick;
 import org.tomighty.bus.messages.ui.ChangeUiState;
+import org.tomighty.bus.timer.TimerFinished;
+import org.tomighty.bus.timer.TimerTick;
 import org.tomighty.time.Time;
 import org.tomighty.time.Timer;
 import org.tomighty.ui.PopupMenu;

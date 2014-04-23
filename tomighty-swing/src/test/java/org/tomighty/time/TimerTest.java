@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.tomighty.bus.messages.timer.TimerFinished;
-import org.tomighty.bus.messages.timer.TimerInterrupted;
-import org.tomighty.bus.messages.timer.TimerStarted;
-import org.tomighty.bus.messages.timer.TimerTick;
+import org.tomighty.bus.timer.TimerFinished;
+import org.tomighty.bus.timer.TimerInterrupted;
+import org.tomighty.bus.timer.TimerStarted;
+import org.tomighty.bus.timer.TimerTick;
 import org.tomighty.mock.bus.MockBus;
 
 public class TimerTest {

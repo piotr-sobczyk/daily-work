@@ -21,10 +21,10 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import org.tomighty.bus.Bus;
-import org.tomighty.bus.messages.timer.TimerFinished;
-import org.tomighty.bus.messages.timer.TimerInterrupted;
-import org.tomighty.bus.messages.timer.TimerStarted;
-import org.tomighty.bus.messages.timer.TimerTick;
+import org.tomighty.bus.timer.TimerFinished;
+import org.tomighty.bus.timer.TimerInterrupted;
+import org.tomighty.bus.timer.TimerStarted;
+import org.tomighty.bus.timer.TimerTick;
 
 public class Timer {
 
@@ -104,7 +104,7 @@ public class Timer {
 
         bus.publish(new TimerTick(state.getTime()));
 
-        if(state.getTime().isZero())
+        if (state.getTime().isZero())
             finish();
     }
 
