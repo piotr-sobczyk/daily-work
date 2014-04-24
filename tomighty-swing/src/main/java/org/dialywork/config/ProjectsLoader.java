@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import org.dialywork.bus.Bus;
 import org.dialywork.projects.Project;
 
-public class Projects {
+public class ProjectsLoader {
     @Inject
     private Directories directories;
     @Inject
@@ -28,17 +28,13 @@ public class Projects {
         properties = propertyStore.load(projectsFile);
     }
 
-    public List<Project> getProjects() {
+    public List<Project> loadProjects() {
         List<Project> projects = new ArrayList<Project>();
         for (String projectName : properties.stringPropertyNames()) {
             int dialyTimeMins = Integer.parseInt(properties.getProperty(projectName));
             projects.add(new Project(projectName, dialyTimeMins, bus));
         }
         return projects;
-    }
-
-    public int getTimeInMinutesForProject(String projectName) {
-        return Integer.parseInt(properties.getProperty(projectName));
     }
 
 }

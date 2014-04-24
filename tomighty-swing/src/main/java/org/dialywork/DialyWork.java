@@ -32,6 +32,7 @@ import org.dialywork.bus.messages.ui.UiStateChanged;
 import org.dialywork.config.Directories;
 import org.dialywork.config.Options;
 import org.dialywork.inject.DialyWorkModule;
+import org.dialywork.quartz.Quartz;
 import org.dialywork.ui.UiState;
 import org.dialywork.ui.Window;
 import org.dialywork.ui.state.InitialState;
@@ -55,6 +56,8 @@ public class DialyWork implements Runnable {
     private Injector injector;
     @Inject
     private Directories directories;
+    @Inject
+    private Quartz quartz;
 
     private UiState currentState;
 

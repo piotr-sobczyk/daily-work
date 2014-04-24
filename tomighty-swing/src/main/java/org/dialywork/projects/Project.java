@@ -18,7 +18,7 @@ public class Project {
         this.eventBus = eventBus;
 
         time = new Time(timeMins);
-        totalDailyTime = time;
+        totalDailyTime = new Time(timeMins);
     }
 
     public String getDisplayName() {
@@ -32,6 +32,14 @@ public class Project {
         isFinished = true;
 
         eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
+    }
+
+    public void reset() {
+        isFinished = false;
+        time = new Time(totalDailyTime.minutes());
+
+        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
+        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
     }
 
     public void updateTime(Time time) {

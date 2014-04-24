@@ -1,5 +1,7 @@
 package org.dialywork.projects;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -8,6 +10,7 @@ import org.dialywork.bus.Subscriber;
 import org.dialywork.bus.messages.ui.ChangeUiState;
 import org.dialywork.bus.timer.TimerFinished;
 import org.dialywork.bus.timer.TimerTick;
+import org.dialywork.config.ProjectsLoader;
 import org.dialywork.time.Time;
 import org.dialywork.time.Timer;
 import org.dialywork.ui.PopupMenu;
@@ -25,9 +28,15 @@ public class ProjectsManager {
     @Inject
     private PopupMenu popupMenu;
 
+    private List<Project> projects;
     private Project currentProject;
 
     public static final String INITIAL_PROJECT_NAME = "Select a project";
+
+    @Inject
+    public ProjectsManager(ProjectsLoader projectsLoader) {
+        projects = projectsLoader.loadProjects();
+    }
 
     @PostConstruct
     public void initialize() {
@@ -35,6 +44,16 @@ public class ProjectsManager {
         bus.subscribe(new UpdateTime(), TimerTick.class);
 
         window.setProjectName(INITIAL_PROJECT_NAME);
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void resetProjects() {
+        for (Project project : projects) {
+            project.reset();
+        }
     }
 
     private class UpdateTime implements Subscriber<TimerTick> {

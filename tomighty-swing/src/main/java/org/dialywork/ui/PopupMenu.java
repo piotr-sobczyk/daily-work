@@ -16,7 +16,6 @@ import javax.swing.SwingUtilities;
 
 import org.dialywork.bus.Bus;
 import org.dialywork.bus.Subscriber;
-import org.dialywork.config.Projects;
 import org.dialywork.i18n.Messages;
 import org.dialywork.projects.Project;
 import org.dialywork.projects.ProjectsManager;
@@ -31,8 +30,6 @@ public class PopupMenu {
     private Injector injector;
     @Inject
     private Messages messages;
-    @Inject
-    private Projects projects;
     @Inject
     private Bus bus;
     @Inject
@@ -84,7 +81,7 @@ public class PopupMenu {
         JPopupMenu menu = new JPopupMenu();
 
         ButtonGroup projectsGroup = new ButtonGroup();
-        for (Project project : projects.getProjects()) {
+        for (Project project : projectsManager.getProjects()) {
             JMenuItem item = projectMenuItem(projectsGroup, project);
             projectMenuItems.put(project, item);
             menu.add(item);

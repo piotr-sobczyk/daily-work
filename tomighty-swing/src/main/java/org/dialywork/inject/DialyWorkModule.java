@@ -22,7 +22,7 @@ import org.dialywork.bus.Bus;
 import org.dialywork.bus.DefaultBus;
 import org.dialywork.config.Configuration;
 import org.dialywork.config.Options;
-import org.dialywork.config.Projects;
+import org.dialywork.config.ProjectsLoader;
 import org.dialywork.i18n.Messages;
 import org.dialywork.projects.ProjectsManager;
 import org.dialywork.resources.cache.Caches;
@@ -52,7 +52,7 @@ public class DialyWorkModule extends AbstractModule {
         bind(Gauge.class).in(SINGLETON);
         bind(Options.class).in(SINGLETON);
         bind(Configuration.class).in(SINGLETON);
-        bind(Projects.class).in(SINGLETON);
+        bind(ProjectsLoader.class).in(SINGLETON);
         bind(Messages.class).in(SINGLETON);
         bind(Sounds.class).in(SINGLETON);
         bind(SoundPlayer.class).in(SINGLETON);
