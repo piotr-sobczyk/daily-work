@@ -122,7 +122,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.dialywork.DialyWork</mainClass>
+                            <mainClass>org.dailywork.DailyWork</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -134,7 +134,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.dialywork.DialyWork</mainClass>
+                            <mainClass>org.dailywork.DailyWork</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
