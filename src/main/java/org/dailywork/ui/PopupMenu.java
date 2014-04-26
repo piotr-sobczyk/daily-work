@@ -21,6 +21,7 @@ import org.dailywork.projects.Project;
 import org.dailywork.projects.ProjectsManager;
 import org.dailywork.ui.menu.Exit;
 import org.dailywork.ui.menu.ShowOptions;
+import org.dailywork.ui.menu.ShowProjects;
 
 import com.google.inject.Injector;
 
@@ -88,7 +89,8 @@ public class PopupMenu {
         }
         menu.addSeparator();
 
-        menu.add(menuItem("Options", injector.getInstance(ShowOptions.class)));
+        menu.add(menuItem("Projects...", injector.getInstance(ShowProjects.class)));
+        menu.add(menuItem("Options...", injector.getInstance(ShowOptions.class)));
         //TODO: prepare new About page
         //menu.add(menuItem("About", injector.getInstance(ShowAboutWindow.class)));
 
