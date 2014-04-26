@@ -37,7 +37,7 @@ public class Configuration {
 
     @PostConstruct
     public void initialize() {
-        configFile = new File(directories.configuration(), "tomighty.conf");
+        configFile = new File(directories.configuration(), "dailywork.conf");
         properties = propertyStore.load(configFile);
     }
 

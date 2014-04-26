@@ -24,7 +24,7 @@ public class Directories {
 
     public Directories() {
         File userHome = new File(System.getProperty("user.home"));
-        configuration = new File(userHome, ".tomighty");
+        configuration = new File(userHome, ".dailywork");
         configuration.mkdirs();
     }
 
