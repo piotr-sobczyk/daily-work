@@ -3,7 +3,7 @@ DialyWork
 
 DialyWork is a Tomighty fork. It helps you perform tasks that you want to accomplish for fixed amount of time every day.
 
-This approach is orthogonal to Pomodoro Technique. You can adapt Pomodoro if you wish but it's not mandatory.
+This approach is orthogonal to Pomodoro Technique (you can adapt Pomodoro if you wish but don't have to).
 
 Unlike in Pomodoro, you can pause and resume at will and take breaks of arbitrary length.
 
@@ -12,7 +12,7 @@ Building
 
 Regardless of your operating system, you must have the following things installed on it and included in your path:
 
-  * JRE 1.5 or greater
+  * JRE 1.7 or greater
   * Maven 2.x or greater
   * Git
 
