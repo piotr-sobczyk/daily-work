@@ -62,12 +62,12 @@
 ;======================================================
 ; Installer Sections
 
-Section "Tomighty"
+Section "DailyWork"
     SectionIn RO
     SetOutPath $INSTDIR
     SetOverwrite on
     File "target\${PROJECT_ARTIFACT_ID}-${PROJECT_VERSION}.exe"
-    writeUninstaller "$INSTDIR\tomighty_uninstall.exe"
+    writeUninstaller "$INSTDIR\dailywork_uninstall.exe"
 SectionEnd
 
 Section "Start menu shortcuts"
@@ -84,7 +84,7 @@ SectionEnd
 
 Section "Quick launch shortcut"
     SetShellVarContext all
-    CreateShortCut "$QUICKLAUNCH\Tomighty.lnk" "$INSTDIR\${PROJECT_ARTIFACT_ID}-${PROJECT_VERSION}.exe" "" "$INSTDIR\${PROJECT_ARTIFACT_ID}-${PROJECT_VERSION}.exe" 0
+    CreateShortCut "$QUICKLAUNCH\DailyWork.lnk" "$INSTDIR\${PROJECT_ARTIFACT_ID}-${PROJECT_VERSION}.exe" "" "$INSTDIR\${PROJECT_ARTIFACT_ID}-${PROJECT_VERSION}.exe" 0
 SectionEnd
 
 ; Installer functions
@@ -99,11 +99,11 @@ Section "uninstall"
   delete "$SMPROGRAMS\${PROJECT_NAME}\Uninstall.lnk"
   RMDir "$SMPROGRAMS\${PROJECT_NAME}"
   
-  delete "$QUICKLAUNCH\Tomighty.lnk"
-  delete "$DESKTOP\Tomighty.lnk"
+  delete "$QUICKLAUNCH\DailyWork.lnk"
+  delete "$DESKTOP\DailyWork.lnk"
   
   delete "$INSTDIR\${PROJECT_ARTIFACT_ID}-${PROJECT_VERSION}.exe"
-  delete "$INSTDIR\tomighty_uninstall.exe"
+  delete "$INSTDIR\dailywork_uninstall.exe"
   RMDir "$INSTDIR"
 SectionEnd
 

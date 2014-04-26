@@ -265,7 +265,6 @@
                 <activeByDefault>false</activeByDefault>
                 <os>
                     <family>Windows</family>
-                    <arch>x86</arch>
                 </os>
             </activation>
             <repositories>
@@ -303,11 +302,11 @@
                                 <configuration>
                                     <headerType>gui</headerType>
                                     <outfile>target/${project.artifactId}-${project.version}.exe</outfile>
-                                    <jar>target/${project.artifactId}-${project.version}.jar</jar>
+                                    <jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
                                     <icon>src/main/images/tomato.ico</icon>
                                     <errTitle>${project.name}</errTitle>
                                     <jre>
-                                        <minVersion>1.5.0</minVersion>
+                                        <minVersion>1.7.0</minVersion>
                                     </jre>
                                     <singleInstance>
                                         <mutexName>${project.artifactId}</mutexName>
@@ -317,13 +316,12 @@
                                         <txtFileVersion>${project.version}.0</txtFileVersion>
                                         <fileDescription>Desktop timer for the Pomodoro Technique users
                                         </fileDescription>
-                                        <copyright>Copyright 2010 Celio Cidral Junior</copyright>
+                                        <copyright>Copyright 2014 Piotr Sobczyk</copyright>
                                         <productVersion>${project.version}.0</productVersion>
                                         <txtProductVersion>${project.version}.0</txtProductVersion>
                                         <productName>${project.name}</productName>
                                         <internalName>${project.artifactId}</internalName>
-                                        <originalFilename>${project.artifactId}-${project.version}.exe
-                                        </originalFilename>
+                                        <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
                                     </versionInfo>
                                 </configuration>
                             </execution>
@@ -385,7 +383,6 @@
                                     <rules>
                                         <requireOS>
                                             <family>windows</family>
-                                            <arch>x86</arch>
                                         </requireOS>
                                     </rules>
                                     <fail>true</fail>
