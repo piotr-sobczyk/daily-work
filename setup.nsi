@@ -41,7 +41,7 @@
   !define MUI_COMPONENTSPAGE_SMALLDESC
   !define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
   !define MUI_FINISHPAGE
-  !define MUI_FINISHPAGE_TEXT "Thank you for installing ${PROJECT_NAME}. \r\n\n\nYou can now run ${PROJECT_ARTIFACT_ID} from your command line."
+  !define MUI_FINISHPAGE_TEXT "Thank you for installing ${PROJECT_NAME}."
   !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
 
 ;======================================================
