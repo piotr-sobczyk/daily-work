@@ -72,7 +72,6 @@ public class OptionsDialog extends JDialog {
     }
 
     private void createOptionGroups() {
-        optionGroups.add(injector.getInstance(Times.class));
         optionGroups.add(injector.getInstance(UserInterface.class));
         optionGroups.add(injector.getInstance(Sounds.class));
         for (OptionGroup group : optionGroups) {
