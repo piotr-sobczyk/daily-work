@@ -1,24 +1,22 @@
 package org.dailywork.projects;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.time.Time;
-
 public class Project {
-    private String name;
-    private Time time;
-    private Time totalDailyTime;
-    private boolean isFinished;
-
-    private Bus eventBus;
-
     private static final int DISPLAY_NAME_TRIM_THRESHOLD = 18;
 
-    public Project(String name, int timeMins, Bus eventBus) {
-        this.name = name;
-        this.eventBus = eventBus;
+    private String name;
+    private int dailyTimeMins;
 
-        time = new Time(timeMins);
-        totalDailyTime = new Time(timeMins);
+    public Project(String name, int dailyTimeMins) {
+        this.name = name;
+        this.dailyTimeMins = dailyTimeMins;
+    }
+
+    public int getDailyTimeMins() {
+        return dailyTimeMins;
+    }
+
+    public void setDailyTimeMins(int dialyTimeMins) {
+        this.dailyTimeMins = dialyTimeMins;
     }
 
     public String getDisplayName() {
@@ -28,75 +26,17 @@ public class Project {
         return name;
     }
 
-    public void markFinished() {
-        isFinished = true;
-
-        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
-    }
-
-    public void reset() {
-        isFinished = false;
-        time = new Time(totalDailyTime.minutes());
-
-        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
-        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
-    }
-
-    public void updateTime(Time time) {
-        this.time = time;
-
-        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
-    }
-
-    public Time getTotalDailyTime() {
-        return totalDailyTime;
-    }
-
-    public Time getTime() {
-        return time;
-    }
-
     public String getName() {
         return name;
     }
 
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Project project = (Project) o;
-        return name.equals(project.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return name;
-    }
-
-    public static class Updated extends ModelNotification<Project> {
-
-        public enum ChangeType {
-            STATUS, TIME
-        }
-
-        private Updated(Project model, ChangeType changeType) {
-            super(model, changeType);
-        }
-
     }
 
 }

@@ -22,7 +22,7 @@ import org.dailywork.bus.Bus;
 import org.dailywork.bus.DefaultBus;
 import org.dailywork.config.Configuration;
 import org.dailywork.config.Options;
-import org.dailywork.config.ProjectsLoader;
+import org.dailywork.config.ProjectsStore;
 import org.dailywork.i18n.Messages;
 import org.dailywork.projects.ProjectsManager;
 import org.dailywork.resources.cache.Caches;
@@ -52,7 +52,7 @@ public class DailyWorkModule extends AbstractModule {
         bind(Gauge.class).in(SINGLETON);
         bind(Options.class).in(SINGLETON);
         bind(Configuration.class).in(SINGLETON);
-        bind(ProjectsLoader.class).in(SINGLETON);
+        bind(ProjectsStore.class).in(SINGLETON);
         bind(Messages.class).in(SINGLETON);
         bind(Sounds.class).in(SINGLETON);
         bind(SoundPlayer.class).in(SINGLETON);

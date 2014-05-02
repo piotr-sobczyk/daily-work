@@ -18,7 +18,9 @@ import org.dailywork.bus.Bus;
 import org.dailywork.bus.Subscriber;
 import org.dailywork.i18n.Messages;
 import org.dailywork.projects.Project;
+import org.dailywork.projects.ProjectProgress;
 import org.dailywork.projects.ProjectsManager;
+import org.dailywork.time.Time;
 import org.dailywork.ui.menu.Exit;
 import org.dailywork.ui.menu.ShowOptions;
 import org.dailywork.ui.menu.ShowProjects;
@@ -36,40 +38,42 @@ public class PopupMenu {
     @Inject
     private ProjectsManager projectsManager;
 
-
-    private JPopupMenu popupMenu;
+    private JPopupMenu popupMenu = new JPopupMenu();
 
     private Map<Project, JMenuItem> projectMenuItems = new HashMap<>();
 
     @PostConstruct
     public void initialize() {
-        popupMenu = createComponent();
-        bus.subscribe(new ProjectListener(), Project.Updated.class);
+        reloadMenu();
+
+        bus.subscribe(new ProjectListener(), ProjectProgress.Updated.class);
     }
 
-    private class ProjectListener implements Subscriber<Project.Updated> {
+    private class ProjectListener implements Subscriber<ProjectProgress.Updated> {
         @Override
-        public void receive(Project.Updated update) {
-            updateMenuItemForProject(update.getModel());
+        public void receive(ProjectProgress.Updated update) {
+            updateProjectProgress(update.getModel());
         }
     }
 
-    private void updateMenuItemForProject(final Project project) {
+    private void updateProjectProgress(final ProjectProgress projectProgress) {
         String prefix = "";
         String suffix = "";
-        if (project.isFinished()) {
+
+        if (projectProgress.isFinished()) {
             prefix = "<html><strike>";
             suffix = "</strike></html>";
         }
 
+        Project project = projectProgress.getProject();
         final JMenuItem menuItem = projectMenuItems.get(project);
-        final String text = prefix + projectMenuItemLabel(project) + suffix;
+        final String text = prefix + projectMenuItemLabel(project, projectProgress) + suffix;
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 menuItem.setText(text);
-                menuItem.setEnabled(!project.isFinished());
+                menuItem.setEnabled(!projectProgress.isFinished());
             }
         });
     }
@@ -78,34 +82,39 @@ public class PopupMenu {
         return popupMenu;
     }
 
-    private JPopupMenu createComponent() {
-        JPopupMenu menu = new JPopupMenu();
+    public void reloadMenu(){
+        popupMenu.removeAll();
+        projectMenuItems.clear();
 
         ButtonGroup projectsGroup = new ButtonGroup();
         for (Project project : projectsManager.getProjects()) {
             JMenuItem item = projectMenuItem(projectsGroup, project);
             projectMenuItems.put(project, item);
-            menu.add(item);
+            popupMenu.add(item);
         }
-        menu.addSeparator();
+        popupMenu.addSeparator();
 
-        menu.add(menuItem("Projects...", injector.getInstance(ShowProjects.class)));
-        menu.add(menuItem("Options...", injector.getInstance(ShowOptions.class)));
+        popupMenu.add(menuItem("Projects...", injector.getInstance(ShowProjects.class)));
+        popupMenu.add(menuItem("Options...", injector.getInstance(ShowOptions.class)));
         //TODO: prepare new About page
         //menu.add(menuItem("About", injector.getInstance(ShowAboutWindow.class)));
 
-        menu.addSeparator();
-        menu.add(menuItem("Close", new Exit()));
-
-        return menu;
+        popupMenu.addSeparator();
+        popupMenu.add(menuItem("Close", new Exit()));
     }
 
-    private String projectMenuItemLabel(Project project) {
-        return String.format("(%s/%s) %s", project.getTime(), project.getTotalDailyTime(), project.getDisplayName());
+    private String projectMenuItemLabel(Project project, ProjectProgress projectProgress) {
+        Time currentTime = projectProgress.getTime();
+        Time dailyTime = new Time(project.getDailyTimeMins());
+        String displayName = projectProgress.getProject().getDisplayName();
+
+        return String.format("(%s/%s) %s", currentTime, dailyTime, displayName);
     }
 
     private JMenuItem projectMenuItem(final ButtonGroup projectsGroup, final Project project) {
-        final JRadioButtonMenuItem item = new JRadioButtonMenuItem(projectMenuItemLabel(project));
+        ProjectProgress projectProgress = projectsManager.getStatusForProject(project);
+        String itemLabel = projectMenuItemLabel(project, projectProgress);
+        final JRadioButtonMenuItem item = new JRadioButtonMenuItem(itemLabel);
         projectsGroup.add(item);
 
         item.addItemListener(new ItemListener() {
