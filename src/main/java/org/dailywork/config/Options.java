@@ -24,7 +24,7 @@ import org.dailywork.bus.Bus;
 import org.dailywork.bus.messages.config.TimeOnTrayConfigChanged;
 import org.dailywork.bus.messages.ui.LookChanged;
 import org.dailywork.ui.theme.Theme;
-import org.dailywork.ui.theme.themes.Shiny;
+import org.dailywork.ui.theme.themes.BrushedMetal;
 
 public class Options {
 
@@ -89,11 +89,11 @@ public class Options {
         }
 
         public Theme theme() {
-            return config.asObject(UI_THEME, Shiny.class);
+            return config.asObject(UI_THEME, BrushedMetal.class);
         }
 
         public void theme(Class<? extends Theme> clazz) {
-            Class<? extends Theme> currentClass = config.asClass(UI_THEME, Shiny.class);
+            Class<? extends Theme> currentClass = config.asClass(UI_THEME, BrushedMetal.class);
             if (!clazz.equals(currentClass)) {
                 config.set(UI_THEME, clazz);
                 bus.publish(new LookChanged());
