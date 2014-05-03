@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -14,9 +15,11 @@ import javax.inject.Inject;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 
 import org.dailywork.i18n.Messages;
 import org.dailywork.projects.Project;
@@ -98,9 +101,9 @@ public class ProjectsDialog extends JDialog {
                 if (e.getClickCount() == 2) {
                     Project project = projectsList.getSelectedValue();
 
-                    EditProjectDialog editProjectDialog = injector.getInstance(EditProjectDialog.class);
-                    editProjectDialog.setProject(project);
-                    editProjectDialog.showDialog();
+                    EditProjectDialogCtrl editProjectDialogCtrl = injector.getInstance(EditProjectDialogCtrl.class);
+                    editProjectDialogCtrl.setProject(project);
+                    editProjectDialogCtrl.showDialog();
                 }
             }
         });
@@ -108,8 +111,8 @@ public class ProjectsDialog extends JDialog {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditProjectDialog editProjectDialog = injector.getInstance(EditProjectDialog.class);
-                editProjectDialog.showDialog();
+                EditProjectDialogCtrl editProjectDialogCtrl = injector.getInstance(EditProjectDialogCtrl.class);
+                editProjectDialogCtrl.showDialog();
                 reloadProjects();
             }
         });
@@ -125,6 +128,17 @@ public class ProjectsDialog extends JDialog {
                 }
             }
         });
+
+        ActionListener escListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        };
+        getRootPane().registerKeyboardAction(escListener,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+
     }
 
     private JButton button(String iconName){
