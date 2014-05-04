@@ -1,5 +1,8 @@
 package org.dailywork.ui.projects;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import org.dailywork.projects.Project;
@@ -21,7 +24,11 @@ public class EditProjectDialogCtrl {
     }
 
     public void showDialog() {
-        view.showDialog();
+        if (project == null) {
+            view.showAddProjectDialog();
+        } else {
+            view.showEditProjectDialog();
+        }
     }
 
     public void setProject(Project project) {
@@ -31,20 +38,40 @@ public class EditProjectDialogCtrl {
         view.setDailyTime(project.getDailyTimeMins());
     }
 
-    private String validate(String projectName, int dailyTime) {
-        return "Validation error";
+    private String validate(String projectName) {
+        if (projectName.isEmpty()) {
+            return "Project name must be specified";
+        }
+
+        Set<Project> otherProjects = new HashSet<>(projectsManager.getProjects());
+        otherProjects.remove(project);
+        for (Project otherProject : otherProjects) {
+            if (otherProject.getName().equals(projectName)) {
+                return "Other project already uses this name";
+            }
+        }
+
+        //No need to validate dailyTime as Swing spinner component
+        //already enforces reasonable value
+
+        return null;
     }
 
     public void projectSaveRequested(EditProjectDialog view) {
         String projectName = view.getProjectName();
         int dailyTime = view.getDailyTime();
 
-        String errorMsg = validate(projectName, dailyTime);
+        String errorMsg = validate(projectName);
         if (errorMsg != null) {
             view.displayErrorMessage(errorMsg);
             return;
         }
 
+        addOrUpdateProject(projectName, dailyTime);
+        view.hideDialog();
+    }
+
+    private void addOrUpdateProject(String projectName, int dailyTime) {
         if (project == null) {
             projectsManager.addProject(projectName, dailyTime);
         } else {
@@ -52,8 +79,6 @@ public class EditProjectDialogCtrl {
             project.setDailyTimeMins(dailyTime);
             projectsManager.updateProjectMetadata(project);
         }
-
-        view.hideDialog();
     }
 
     public void cancelRequested() {

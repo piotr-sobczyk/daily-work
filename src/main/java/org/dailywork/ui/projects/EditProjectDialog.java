@@ -2,6 +2,7 @@ package org.dailywork.ui.projects;
 
 import net.miginfocom.swing.MigLayout;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -18,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.LineBorder;
 
 import org.dailywork.resources.Resources;
 
@@ -39,7 +41,6 @@ class EditProjectDialog extends JDialog {
     }
 
     private void initialize() {
-        setTitle("Edit project");
         setSize(new Dimension(100, 60));
         setResizable(false);
         setModal(true);
@@ -71,7 +72,7 @@ class EditProjectDialog extends JDialog {
         add(new JLabel("Project name"), "growx");
         add(projectNameTf, "growx, wrap");
 
-        add(new JLabel("Daily time"), "growx");
+        add(new JLabel("Daily time (minutes)"), "growx");
         add(dailyTimeSpinner, "alignx left, wrap 10");
 
         errorMsgLabel = new JLabel();
@@ -105,9 +106,23 @@ class EditProjectDialog extends JDialog {
     public void displayErrorMessage(String errorMsg) {
         errorMsgLabel.setText(errorMsg);
         errorMsgLabel.setVisible(true);
+
+        //We know to highlight project name text field because currently it's
+        //the only property of project that undergoes validation
+        projectNameTf.setBorder(new LineBorder(Color.red));
     }
 
-    public void showDialog() {
+    public void showAddProjectDialog() {
+        setTitle("New project");
+        showDialog();
+    }
+
+    public void showEditProjectDialog() {
+        setTitle("Edit project");
+        showDialog();
+    }
+
+    private void showDialog() {
         setVisible(true);
     }
 
