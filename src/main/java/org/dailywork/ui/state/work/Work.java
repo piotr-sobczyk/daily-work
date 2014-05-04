@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.dailywork.ui.state.bursts;
+package org.dailywork.ui.state.work;
 
 import java.awt.event.ActionEvent;
 
@@ -30,7 +30,7 @@ import org.dailywork.ui.state.TimerSupport;
 import org.dailywork.ui.theme.Colors;
 import org.dailywork.ui.theme.colors.Red;
 
-public class Burst extends TimerSupport {
+public class Work extends TimerSupport {
 
     @Inject
     private Options options;
@@ -42,7 +42,7 @@ public class Burst extends TimerSupport {
 
     @Override
     protected String title() {
-        return messages.get("Burst");
+        return messages.get("Work");
     }
 
     @Override
@@ -58,12 +58,7 @@ public class Burst extends TimerSupport {
 
     @Override
     protected Class<? extends UiState> finishedState() {
-        return BurstFinished.class;
-    }
-
-    @Override
-    protected Class<? extends UiState> interruptedState() {
-        return BurstInterrupted.class;
+        return WorkFinished.class;
     }
 
     @Override
@@ -76,21 +71,7 @@ public class Burst extends TimerSupport {
     @Override
     protected Action[] secondaryActions() {
         return new Action[] {
-                new Interrupt()
         };
-    }
-
-    @SuppressWarnings("serial")
-    private class Interrupt extends AbstractAction {
-        public Interrupt() {
-            super(messages.get("Interrupt"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            timer.interrupt();
-            bus.publish(new ChangeUiState(interruptedState()));
-        }
     }
 
     @SuppressWarnings("serial")
@@ -102,7 +83,7 @@ public class Burst extends TimerSupport {
         @Override
         public void actionPerformed(ActionEvent e) {
             timer.pause();
-            bus.publish(new ChangeUiState(BurstPaused.class));
+            bus.publish(new ChangeUiState(WorkPaused.class));
         }
     }
 

@@ -22,17 +22,17 @@ public class ProjectProgress {
     }
 
     public void reset() {
-                isFinished = false;
-                time = new Time(project.getDailyTimeMins());
+        isFinished = false;
+        time = new Time(project.getDailyTimeMins());
 
-                eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
-                eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
+        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
+        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
     }
 
     public void updateTime(Time time) {
-                this.time = time;
+        this.time = time;
 
-                eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
+        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
     }
 
     public Time getTime() {
@@ -42,6 +42,10 @@ public class ProjectProgress {
     public void markFinished() {
         isFinished = true;
         eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
+    }
+
+    public boolean isStarted() {
+        return time.minutes() < project.getDailyTimeMins();
     }
 
     public boolean isFinished() {

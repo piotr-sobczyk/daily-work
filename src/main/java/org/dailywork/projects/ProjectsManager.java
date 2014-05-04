@@ -16,8 +16,10 @@ import org.dailywork.config.ProjectsStore;
 import org.dailywork.time.Time;
 import org.dailywork.time.Timer;
 import org.dailywork.ui.PopupMenu;
+import org.dailywork.ui.UiState;
 import org.dailywork.ui.Window;
-import org.dailywork.ui.state.bursts.BurstPaused;
+import org.dailywork.ui.state.work.WorkPaused;
+import org.dailywork.ui.state.work.WorkToBeStarted;
 
 public class ProjectsManager {
 
@@ -58,7 +60,7 @@ public class ProjectsManager {
         bus.subscribe(new UpdateTime(), TimerTick.class);
     }
 
-    private void reloadProjects(){
+    private void reloadProjects() {
         projects = projectsStore.loadProjects();
     }
 
@@ -135,7 +137,8 @@ public class ProjectsManager {
 
         updateTimer(currentProjectProgress);
 
-        bus.publish(new ChangeUiState(BurstPaused.class));
+        Class<? extends UiState> nextState = currentProjectProgress.isStarted() ? WorkPaused.class : WorkToBeStarted.class;
+        bus.publish(new ChangeUiState(nextState));
         window.setProjectName(newProject.getDisplayName());
     }
 

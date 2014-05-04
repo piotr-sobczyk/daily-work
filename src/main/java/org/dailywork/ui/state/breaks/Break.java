@@ -68,11 +68,6 @@ public class Break extends TimerSupport {
         return BreakFinished.class;
     }
 
-    @Override
-    protected Class<? extends UiState> interruptedState() {
-        return BreakInterrupted.class;
-    }
-
     @SuppressWarnings("serial")
     private class Interrupt extends AbstractAction {
         public Interrupt() {
@@ -82,7 +77,7 @@ public class Break extends TimerSupport {
         @Override
         public void actionPerformed(ActionEvent e) {
             timer.interrupt();
-            bus.publish(new ChangeUiState(interruptedState()));
+            bus.publish(new ChangeUiState(BreakInterrupted.class));
         }
     }
 

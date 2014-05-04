@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.dailywork.ui.state.bursts;
+package org.dailywork.ui.state.work;
 
 import java.awt.Component;
 import java.awt.Image;
@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import org.dailywork.resources.Images;
 import org.dailywork.ui.state.UiStateSupport;
 
-public class BurstFinished extends UiStateSupport {
+public class WorkFinished extends UiStateSupport {
 
     @Inject
     private Images images;

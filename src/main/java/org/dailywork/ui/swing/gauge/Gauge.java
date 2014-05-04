@@ -29,8 +29,8 @@ import org.dailywork.bus.Bus;
 import org.dailywork.bus.Subscriber;
 import org.dailywork.bus.messages.ui.UiStateChanged;
 import org.dailywork.ui.UiState;
-import org.dailywork.ui.state.bursts.Burst;
-import org.dailywork.ui.state.bursts.BurstFinished;
+import org.dailywork.ui.state.work.Work;
+import org.dailywork.ui.state.work.WorkFinished;
 import org.dailywork.ui.swing.laf.GaugeButtonUI;
 import org.dailywork.ui.util.Geometry;
 
@@ -79,10 +79,10 @@ public class Gauge extends JPanel implements Subscriber<UiStateChanged> {
     public void receive(UiStateChanged message) {
         UiState uiState = message.uiState();
 
-        if (uiState instanceof BurstFinished)
+        if (uiState instanceof WorkFinished)
             buttonModel.turnNextLightOn();
 
-        else if (uiState instanceof Burst)
+        else if (uiState instanceof Work)
             turnAllLightsOffIfAllAreOn();
     }
 

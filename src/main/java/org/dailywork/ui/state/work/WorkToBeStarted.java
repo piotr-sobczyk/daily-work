@@ -1,44 +1,40 @@
-package org.dailywork.ui.state.bursts;
+package org.dailywork.ui.state.work;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.dailywork.bus.messages.ui.ChangeUiState;
-import org.dailywork.time.Timer;
+import org.dailywork.resources.Images;
 import org.dailywork.ui.state.UiStateSupport;
 
-public class BurstPaused extends UiStateSupport {
+public class WorkToBeStarted extends UiStateSupport {
 
     @Inject
-    private Timer timer;
-
-    private JLabel remainingTime;
+    private Images images;
 
     @Override
     protected String title() {
-        return "Burst (paused)";
+        return "Project ready to be started";
     }
 
     @Override
     protected Component createContent() {
-        remainingTime = labelFactory.big();
-        return remainingTime;
-    }
-
-    @Override
-    public void afterRendering() {
-        remainingTime.setText(timer.getTime().toString());
+        Image image = images.tomato();
+        ImageIcon imageIcon = new ImageIcon(image);
+        return new JLabel(imageIcon);
     }
 
     @Override
     protected Action[] primaryActions() {
         return new Action[] {
-                new Resume()
+                new Start()
         };
     }
 
@@ -48,14 +44,14 @@ public class BurstPaused extends UiStateSupport {
     }
 
     @SuppressWarnings("serial")
-    private class Resume extends AbstractAction {
-        public Resume() {
-            super("Resume");
+    private class Start extends AbstractAction {
+        public Start() {
+            super("Let's go!");
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            bus.publish(new ChangeUiState(Burst.class));
+            bus.publish(new ChangeUiState(Work.class));
         }
     }
 

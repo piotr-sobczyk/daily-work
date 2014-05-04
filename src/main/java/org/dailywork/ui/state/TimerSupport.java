@@ -50,8 +50,6 @@ public abstract class TimerSupport extends UiStateSupport {
 
     protected abstract Class<? extends UiState> finishedState();
 
-    protected abstract Class<? extends UiState> interruptedState();
-
     @PostConstruct
     public void initialize() {
         bus.subscribe(updateTime, TimerTick.class);

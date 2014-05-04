@@ -22,7 +22,7 @@ import javax.swing.Action;
 
 import org.dailywork.ui.state.ToState;
 import org.dailywork.ui.state.UiStateSupport;
-import org.dailywork.ui.state.bursts.Burst;
+import org.dailywork.ui.state.work.Work;
 
 public class BreakFinished extends UiStateSupport {
 
@@ -39,7 +39,7 @@ public class BreakFinished extends UiStateSupport {
     @Override
     protected Action[] primaryActions() {
         return new Action[] {
-                new ToState(messages.get("Start burst"), Burst.class)
+                new ToState(messages.get("Start burst"), Work.class)
         };
     }
 
