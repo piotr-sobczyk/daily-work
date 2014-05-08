@@ -2,8 +2,9 @@ package org.dailywork.ui.projects;
 
 import net.miginfocom.swing.MigLayout;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,13 +14,15 @@ import java.awt.event.MouseEvent;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.dailywork.i18n.Messages;
 import org.dailywork.projects.Project;
@@ -45,6 +48,7 @@ public class ProjectsDialog extends JDialog {
     private JList<Project> projectsList;
 
     private JButton addButton;
+    private JButton editButton;
     private JButton removeButton;
 
     private void reloadProjects(){
@@ -54,17 +58,19 @@ public class ProjectsDialog extends JDialog {
         }
 
         addButton.setEnabled(projectsListModel.getSize() < MAX_PROJECTS);
-        removeButton.setEnabled(projectsListModel.getSize() > 0);
     }
 
     @PostConstruct
     public void initialize() {
-        setSize(new Dimension(200,150));
+        setSize(new Dimension(280, 180));
         setResizable(false);
         setTitle("Projects");
 
-        addButton = button("/add.png");
-        removeButton = button("/remove.png");
+        addButton = new JButton("Add...");
+        editButton = new JButton("Edit...");
+        editButton.setEnabled(false);
+        removeButton = new JButton("Remove");
+        removeButton.setEnabled(false);
 
         initializeProjectsList();
 
@@ -78,14 +84,19 @@ public class ProjectsDialog extends JDialog {
         projectsListModel = new DefaultListModel();
         reloadProjects();
         projectsList = new JList<Project>(projectsListModel);
+        projectsList.setBorder(new LineBorder(Color.black, 1));
+
+        Font oldFont = projectsList.getFont();
+        projectsList.setFont(new Font(oldFont.getName(), oldFont.getStyle(), 14));
     }
 
     private void addComponents(){
-        setLayout(new MigLayout("insets 10", "[grow]", "[][grow,fill]"));
+        setLayout(new MigLayout("fill, insets 10", "[grow]10[30,fill]"));
 
-        add(addButton, "split 2");
-        add(removeButton, "wrap");
-        add(projectsList,"grow");
+        add(projectsList, "spany, grow");
+        add(addButton, "top, wrap push");
+        add(editButton, "wrap");
+        add(removeButton);
     }
 
     private boolean confirmProjectDeletion(Project selectedProject){
@@ -95,15 +106,19 @@ public class ProjectsDialog extends JDialog {
     }
 
     private void addBehavior(){
+        projectsList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                editButton.setEnabled(true);
+                removeButton.setEnabled(true);
+            }
+        });
+
         projectsList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    Project project = projectsList.getSelectedValue();
-
-                    EditProjectDialogCtrl editProjectDialogCtrl = injector.getInstance(EditProjectDialogCtrl.class);
-                    editProjectDialogCtrl.setProject(project);
-                    editProjectDialogCtrl.showDialog();
+                    editSelectedProject();
                 }
             }
         });
@@ -114,6 +129,13 @@ public class ProjectsDialog extends JDialog {
                 EditProjectDialogCtrl editProjectDialogCtrl = injector.getInstance(EditProjectDialogCtrl.class);
                 editProjectDialogCtrl.showDialog();
                 reloadProjects();
+            }
+        });
+
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editSelectedProject();
             }
         });
 
@@ -141,29 +163,13 @@ public class ProjectsDialog extends JDialog {
 
     }
 
-    private JButton button(String iconName){
-        Image img = resources.image(iconName);
-        final JButton button = new JButton(new ImageIcon(img));
+    private void editSelectedProject() {
+        Project project = projectsList.getSelectedValue();
 
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                button.setBorderPainted(true);
-                super.mouseEntered(e);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button.setBorderPainted(false);
-            }
-        });
-
-        return button;
+        EditProjectDialogCtrl editProjectDialogCtrl = injector.getInstance(EditProjectDialogCtrl.class);
+        editProjectDialogCtrl.setProject(project);
+        editProjectDialogCtrl.showDialog();
+        reloadProjects();
     }
 
     public void showDialog() {
