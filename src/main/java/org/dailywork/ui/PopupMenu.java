@@ -57,17 +57,9 @@ public class PopupMenu {
     }
 
     private void updateProjectProgress(final ProjectProgress projectProgress) {
-        String prefix = "";
-        String suffix = "";
-
-        if (projectProgress.isFinished()) {
-            prefix = "<html><strike>";
-            suffix = "</strike></html>";
-        }
-
         Project project = projectProgress.getProject();
         final JMenuItem menuItem = projectMenuItems.get(project);
-        final String text = prefix + projectMenuItemLabel(project, projectProgress) + suffix;
+        final String text = projectMenuItemLabel(project, projectProgress);
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -82,7 +74,7 @@ public class PopupMenu {
         return popupMenu;
     }
 
-    public void reloadMenu(){
+    public void reloadMenu() {
         popupMenu.removeAll();
         projectMenuItems.clear();
 
@@ -104,18 +96,27 @@ public class PopupMenu {
     }
 
     private String projectMenuItemLabel(Project project, ProjectProgress projectProgress) {
+        String prefix = "";
+        String suffix = "";
+
+        if (projectProgress.isFinished()) {
+            prefix = "<html><strike>";
+            suffix = "</strike></html>";
+        }
+
         Time currentTime = projectProgress.getTime();
         Time dailyTime = new Time(project.getDailyTimeMins());
         String displayName = projectProgress.getProject().getDisplayName();
 
-        return String.format("(%s/%s) %s", currentTime, dailyTime, displayName);
+        return prefix + String.format("(%s/%s) %s", currentTime, dailyTime, displayName) + suffix;
     }
 
     private JMenuItem projectMenuItem(final ButtonGroup projectsGroup, final Project project) {
-        ProjectProgress projectProgress = projectsManager.getStatusForProject(project);
+        ProjectProgress projectProgress = projectsManager.getProgressForProject(project);
         String itemLabel = projectMenuItemLabel(project, projectProgress);
         final JRadioButtonMenuItem item = new JRadioButtonMenuItem(itemLabel);
         projectsGroup.add(item);
+        item.setEnabled(!projectProgress.isFinished());
 
         item.addItemListener(new ItemListener() {
             @Override

@@ -34,15 +34,15 @@ public class ProjectsManager {
     private Bus bus;
 
     private List<Project> projects;
-    private Map<Project, ProjectProgress> projectStatuses = new HashMap<>();
+    private Map<Project, ProjectProgress> projectProgresses = new HashMap<>();
 
     private Project currentProject;
     private ProjectProgress currentProjectProgress;
 
     public static final String INITIAL_PROJECT_NAME = "Select a project";
 
-    public ProjectProgress getStatusForProject(Project project) {
-        return projectStatuses.get(project);
+    public ProjectProgress getProgressForProject(Project project) {
+        return projectProgresses.get(project);
     }
 
     @Inject
@@ -53,7 +53,7 @@ public class ProjectsManager {
         reloadProjects();
 
         for (Project project : projects) {
-            projectStatuses.put(project, createProjectStatus(project));
+            projectProgresses.put(project, createProjectStatus(project));
         }
 
         bus.subscribe(new FinishProject(), TimerFinished.class);
@@ -78,7 +78,7 @@ public class ProjectsManager {
         ProjectProgress projectProgress = createProjectStatus(project);
 
         reloadProjects();
-        projectStatuses.put(project, projectProgress);
+        projectProgresses.put(project, projectProgress);
 
         popupMenu.reloadMenu();
     }
@@ -92,7 +92,7 @@ public class ProjectsManager {
         projectsStore.removeProject(project);
 
         reloadProjects();
-        projectStatuses.remove(project);
+        projectProgresses.remove(project);
 
         popupMenu.reloadMenu();
     }
@@ -109,7 +109,7 @@ public class ProjectsManager {
     }
 
     public void resetProjects() {
-        for (ProjectProgress projectProgress : projectStatuses.values()) {
+        for (ProjectProgress projectProgress : projectProgresses.values()) {
             projectProgress.reset();
         }
     }
@@ -133,7 +133,7 @@ public class ProjectsManager {
 
     public void changeProject(Project newProject) {
         currentProject = newProject;
-        currentProjectProgress = projectStatuses.get(newProject);
+        currentProjectProgress = projectProgresses.get(newProject);
 
         updateTimer(currentProjectProgress);
 
