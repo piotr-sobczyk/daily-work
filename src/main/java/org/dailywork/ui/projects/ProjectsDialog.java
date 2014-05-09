@@ -18,6 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -90,7 +91,9 @@ public class ProjectsDialog extends JDialog {
     private void addComponents() {
         setLayout(new MigLayout("fill, insets 10", "[grow]10[30,fill]"));
 
-        add(projectsList, "spany, grow");
+        JScrollPane projectsListScrollPane = new JScrollPane(projectsList);
+
+        add(projectsListScrollPane, "spany, grow");
         add(addButton, "top, wrap push");
         add(editButton, "wrap");
         add(removeButton);
