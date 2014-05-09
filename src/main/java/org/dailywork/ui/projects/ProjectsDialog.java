@@ -2,7 +2,6 @@ package org.dailywork.ui.projects;
 
 import net.miginfocom.swing.MigLayout;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -20,7 +19,6 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -51,9 +49,9 @@ public class ProjectsDialog extends JDialog {
     private JButton editButton;
     private JButton removeButton;
 
-    private void reloadProjects(){
+    private void reloadProjects() {
         projectsListModel.clear();
-        for(Project project: projectsManager.getProjects()){
+        for (Project project : projectsManager.getProjects()) {
             projectsListModel.addElement(project);
         }
 
@@ -80,17 +78,16 @@ public class ProjectsDialog extends JDialog {
         setLocationRelativeTo(null);
     }
 
-    private void initializeProjectsList(){
+    private void initializeProjectsList() {
         projectsListModel = new DefaultListModel();
         reloadProjects();
         projectsList = new JList<Project>(projectsListModel);
-        projectsList.setBorder(new LineBorder(Color.black, 1));
 
         Font oldFont = projectsList.getFont();
         projectsList.setFont(new Font(oldFont.getName(), oldFont.getStyle(), 14));
     }
 
-    private void addComponents(){
+    private void addComponents() {
         setLayout(new MigLayout("fill, insets 10", "[grow]10[30,fill]"));
 
         add(projectsList, "spany, grow");
@@ -99,13 +96,13 @@ public class ProjectsDialog extends JDialog {
         add(removeButton);
     }
 
-    private boolean confirmProjectDeletion(Project selectedProject){
-        int result = JOptionPane.showConfirmDialog(null,"Are you sure to remove project: `" +
-                selectedProject.getName() + "`?","Project deletion",JOptionPane.WARNING_MESSAGE);
+    private boolean confirmProjectDeletion(Project selectedProject) {
+        int result = JOptionPane.showConfirmDialog(null, "Are you sure to remove project: `" +
+                selectedProject.getName() + "`?", "Project deletion", JOptionPane.WARNING_MESSAGE);
         return result == JOptionPane.OK_OPTION;
     }
 
-    private void addBehavior(){
+    private void addBehavior() {
         projectsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -144,7 +141,7 @@ public class ProjectsDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 Project selectedProject = projectsList.getSelectedValue();
 
-                if(confirmProjectDeletion(selectedProject)){
+                if (confirmProjectDeletion(selectedProject)) {
                     projectsManager.removeProject(selectedProject);
                     reloadProjects();
                 }
