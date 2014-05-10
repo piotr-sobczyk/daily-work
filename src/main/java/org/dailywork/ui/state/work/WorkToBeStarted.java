@@ -21,7 +21,7 @@ public class WorkToBeStarted extends UiStateSupport {
 
     @Override
     protected String title() {
-        return "Project ready to be started";
+        return "Ready to start?";
     }
 
     @Override

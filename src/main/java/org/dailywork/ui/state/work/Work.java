@@ -42,7 +42,7 @@ public class Work extends TimerSupport {
 
     @Override
     protected String title() {
-        return messages.get("Work");
+        return messages.get("In progress");
     }
 
     @Override

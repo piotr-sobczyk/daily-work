@@ -21,7 +21,7 @@ public class WorkPaused extends UiStateSupport {
 
     @Override
     protected String title() {
-        return "Work (paused)";
+        return "Paused";
     }
 
     @Override
