@@ -16,7 +16,7 @@ import org.quartz.impl.StdSchedulerFactory;
 public class Quartz {
 
     @Inject
-    GuiceJobFactory jobFactory;
+    private GuiceJobFactory jobFactory;
 
     @PostConstruct
     public void initialize() {
@@ -37,7 +37,7 @@ public class Quartz {
         scheduler.setJobFactory(jobFactory);
 
         JobDetail job = newJob(ResetProjectsJob.class)
-                .withIdentity("resetProjects")
+                .withIdentity("resetState")
                 .build();
 
         Trigger trigger = newTrigger().withIdentity("resetProjects").

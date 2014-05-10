@@ -25,15 +25,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.dailywork.resources.Images;
+import org.dailywork.ui.Window;
 
 public class InitialState extends UiStateSupport {
 
+    public static final String INITIAL_PROJECT_NAME = "Select a project";
+
+    @Inject
+    private Window window;
     @Inject
     private Images images;
 
     @Override
     protected String title() {
         return null;
+    }
+
+    @Override
+    public void afterRendering() {
+        window.setProjectName(INITIAL_PROJECT_NAME);
+
+        super.afterRendering();
     }
 
     @Override

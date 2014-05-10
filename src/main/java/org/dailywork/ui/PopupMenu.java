@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 
 import org.dailywork.bus.Bus;
 import org.dailywork.bus.Subscriber;
+import org.dailywork.bus.messages.general.StateReset;
 import org.dailywork.i18n.Messages;
 import org.dailywork.projects.Project;
 import org.dailywork.projects.ProjectProgress;
@@ -39,6 +40,7 @@ public class PopupMenu {
     private ProjectsManager projectsManager;
 
     private JPopupMenu popupMenu = new JPopupMenu();
+    private ButtonGroup projectsGroup;
 
     private Map<Project, JMenuItem> projectMenuItems = new HashMap<>();
 
@@ -47,6 +49,7 @@ public class PopupMenu {
         reloadMenu();
 
         bus.subscribe(new ProjectListener(), ProjectProgress.Updated.class);
+        bus.subscribe(new ResetState(), StateReset.class);
     }
 
     private class ProjectListener implements Subscriber<ProjectProgress.Updated> {
@@ -78,7 +81,7 @@ public class PopupMenu {
         popupMenu.removeAll();
         projectMenuItems.clear();
 
-        ButtonGroup projectsGroup = new ButtonGroup();
+        projectsGroup = new ButtonGroup();
         for (Project project : projectsManager.getProjects()) {
             JMenuItem item = projectMenuItem(projectsGroup, project);
             projectMenuItems.put(project, item);
@@ -134,6 +137,14 @@ public class PopupMenu {
         JMenuItem item = new JMenuItem(messages.get(text));
         item.addActionListener(listener);
         return item;
+    }
+
+    private class ResetState implements Subscriber<StateReset> {
+
+        @Override
+        public void receive(StateReset message) {
+            projectsGroup.clearSelection();
+        }
     }
 
 }

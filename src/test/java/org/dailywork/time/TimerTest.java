@@ -5,7 +5,6 @@ import static junit.framework.Assert.assertEquals;
 import java.util.List;
 
 import org.dailywork.bus.timer.TimerFinished;
-import org.dailywork.bus.timer.TimerInterrupted;
 import org.dailywork.bus.timer.TimerStarted;
 import org.dailywork.bus.timer.TimerTick;
 import org.dailywork.mock.bus.MockBus;
@@ -49,29 +48,6 @@ public class TimerTest {
         assertEquals("Third tick's time", Time.seconds(0), thirdTick.getTime());
 
         TimerFinished timerFinished = (TimerFinished) messages.get(4);
-    }
-
-    @Test(timeout = 5000)
-    public void startTimerAndInterruptAfterFirstTick() {
-        timer.start(Time.seconds(3));
-
-        List<Object> messages = bus.waitUntilNumberOfMessagesReach(2);
-
-        timer.interrupt();
-
-        assertEquals("Amount of published messages", 3, messages.size());
-        assertEquals("First message", TimerStarted.class, messages.get(0).getClass());
-        assertEquals("Second message", TimerTick.class, messages.get(1).getClass());
-        assertEquals("Third message", TimerInterrupted.class, messages.get(2).getClass());
-
-        TimerStarted timerStarted = (TimerStarted) messages.get(0);
-        assertEquals("Initial time", Time.seconds(3), timerStarted.getTime());
-
-        TimerTick tick = (TimerTick) messages.get(1);
-        assertEquals("Tick's time", Time.seconds(2), tick.getTime());
-
-        TimerInterrupted timerInterrupted = (TimerInterrupted) messages.get(2);
-        assertEquals("Time when timer was interrupted", Time.seconds(2), timerInterrupted.getTime());
     }
 
 }

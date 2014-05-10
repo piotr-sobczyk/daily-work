@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.dailywork.bus.Bus;
 import org.dailywork.bus.Subscriber;
+import org.dailywork.bus.messages.general.StateReset;
 import org.dailywork.bus.messages.ui.ChangeUiState;
 import org.dailywork.bus.timer.TimerFinished;
 import org.dailywork.bus.timer.TimerTick;
@@ -18,6 +19,7 @@ import org.dailywork.time.Timer;
 import org.dailywork.ui.PopupMenu;
 import org.dailywork.ui.UiState;
 import org.dailywork.ui.Window;
+import org.dailywork.ui.state.InitialState;
 import org.dailywork.ui.state.work.WorkPaused;
 import org.dailywork.ui.state.work.WorkToBeStarted;
 
@@ -39,10 +41,13 @@ public class ProjectsManager {
     private Project currentProject;
     private ProjectProgress currentProjectProgress;
 
-    public static final String INITIAL_PROJECT_NAME = "Select a project";
-
     public ProjectProgress getProgressForProject(Project project) {
         return projectProgresses.get(project);
+    }
+
+    @PostConstruct
+    public void initialize() {
+        bus.subscribe(new ResetState(), StateReset.class);
     }
 
     @Inject
@@ -64,15 +69,9 @@ public class ProjectsManager {
         projects = projectsStore.loadProjects();
     }
 
-
-    @PostConstruct
-    public void initialize() {
-        window.setProjectName(INITIAL_PROJECT_NAME);
-    }
-
     public void addProject(String projectName, int dailyTimeInMins) {
         Project project = new Project(projectName, dailyTimeInMins);
-        //add checking if doesn't exist
+        //TODO: add checking if doesn't exist
         projectsStore.saveProject(project);
 
         ProjectProgress projectProgress = createProjectStatus(project);
@@ -108,9 +107,15 @@ public class ProjectsManager {
         return projects;
     }
 
-    public void resetProjects() {
-        for (ProjectProgress projectProgress : projectProgresses.values()) {
-            projectProgress.reset();
+    private class ResetState implements Subscriber<StateReset> {
+
+        @Override
+        public void receive(StateReset message) {
+            for (ProjectProgress projectProgress : projectProgresses.values()) {
+                projectProgress.reset();
+            }
+            timer.pause();
+            bus.publish(new ChangeUiState(InitialState.class));
         }
     }
 

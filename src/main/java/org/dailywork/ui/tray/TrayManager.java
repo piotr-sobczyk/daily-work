@@ -79,7 +79,7 @@ public class TrayManager implements Runnable {
     }
 
     private void showWelcomeMessage(TrayIcon icon) {
-        String caption = messages.get("First time using Tomighty?");
+        String caption = messages.get("First time using Daily Work?");
         String message = messages.get("Click on the tomato icon to start using it");
         icon.displayMessage(caption, message, MessageType.INFO);
     }

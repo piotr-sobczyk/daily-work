@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.dailywork.bus.Bus;
 import org.dailywork.bus.timer.TimerFinished;
-import org.dailywork.bus.timer.TimerInterrupted;
 import org.dailywork.bus.timer.TimerStarted;
 import org.dailywork.bus.timer.TimerTick;
 
@@ -65,13 +64,6 @@ public class Timer {
         state.markEnded();
 
         bus.publish(new TimerFinished());
-    }
-
-    public void interrupt() {
-        cancelTimer();
-        state.markEnded();
-
-        bus.publish(new TimerInterrupted(state.getTime()));
     }
 
     public void pause() {
