@@ -14,8 +14,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.general.StateReset;
 import org.dailywork.i18n.Messages;
 import org.dailywork.projects.Project;
@@ -35,7 +35,7 @@ public class PopupMenu {
     @Inject
     private Messages messages;
     @Inject
-    private Bus bus;
+    private EventBus eventBus;
     @Inject
     private ProjectsManager projectsManager;
 
@@ -48,18 +48,12 @@ public class PopupMenu {
     public void initialize() {
         reloadMenu();
 
-        bus.subscribe(new ProjectListener(), ProjectProgress.Updated.class);
-        bus.subscribe(new ResetState(), StateReset.class);
+        eventBus.register(this);
     }
 
-    private class ProjectListener implements Subscriber<ProjectProgress.Updated> {
-        @Override
-        public void receive(ProjectProgress.Updated update) {
-            updateProjectProgress(update.getModel());
-        }
-    }
-
-    private void updateProjectProgress(final ProjectProgress projectProgress) {
+    @Subscribe
+    public void updateProgress(ProjectProgress.Updated update) {
+        final ProjectProgress projectProgress = update.getModel();
         Project project = projectProgress.getProject();
         final JMenuItem menuItem = projectMenuItems.get(project);
         final String text = projectMenuItemLabel(project, projectProgress);
@@ -139,12 +133,9 @@ public class PopupMenu {
         return item;
     }
 
-    private class ResetState implements Subscriber<StateReset> {
-
-        @Override
-        public void receive(StateReset message) {
-            projectsGroup.clearSelection();
-        }
+    @Subscribe
+    public void resetState(StateReset message) {
+        projectsGroup.clearSelection();
     }
 
 }

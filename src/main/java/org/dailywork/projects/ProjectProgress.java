@@ -1,6 +1,6 @@
 package org.dailywork.projects;
 
-import org.dailywork.bus.Bus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.time.Time;
 
 public class ProjectProgress {
@@ -8,9 +8,9 @@ public class ProjectProgress {
     private Time time;
     private boolean isFinished;
 
-    private Bus eventBus;
+    private EventBus eventBus;
 
-    public ProjectProgress(Project project, int timeMins, Bus eventBus) {
+    public ProjectProgress(Project project, int timeMins, EventBus eventBus) {
         this.project = project;
         this.eventBus = eventBus;
 
@@ -25,14 +25,14 @@ public class ProjectProgress {
         isFinished = false;
         time = new Time(project.getDailyTimeMins());
 
-        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
-        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
+        eventBus.post(new Updated(this, Updated.ChangeType.STATUS));
+        eventBus.post(new Updated(this, Updated.ChangeType.TIME));
     }
 
     public void updateTime(Time time) {
         this.time = time;
 
-        eventBus.publish(new Updated(this, Updated.ChangeType.TIME));
+        eventBus.post(new Updated(this, Updated.ChangeType.TIME));
     }
 
     public Time getTime() {
@@ -41,7 +41,7 @@ public class ProjectProgress {
 
     public void markFinished() {
         isFinished = true;
-        eventBus.publish(new Updated(this, Updated.ChangeType.STATUS));
+        eventBus.post(new Updated(this, Updated.ChangeType.STATUS));
     }
 
     public boolean isStarted() {

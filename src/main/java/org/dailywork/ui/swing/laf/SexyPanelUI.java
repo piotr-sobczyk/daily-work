@@ -26,26 +26,26 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.plaf.basic.BasicPanelUI;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.LookChanged;
 import org.dailywork.ui.theme.Look;
 import org.dailywork.ui.theme.Theme;
 import org.dailywork.ui.util.Canvas;
 
-public class SexyPanelUI extends BasicPanelUI implements Subscriber<LookChanged> {
+public class SexyPanelUI extends BasicPanelUI {
 
     @Inject
     private Look look;
     private List<JComponent> installedComponents = new ArrayList<JComponent>();
 
     @Inject
-    public SexyPanelUI(Bus bus) {
-        bus.subscribe(this, LookChanged.class);
+    public SexyPanelUI(EventBus bus) {
+        bus.register(this);
     }
 
-    @Override
-    public void receive(LookChanged message) {
+    @Subscribe
+    public void changeLook(LookChanged message) {
         for (JComponent c : installedComponents) {
             c.repaint();
         }

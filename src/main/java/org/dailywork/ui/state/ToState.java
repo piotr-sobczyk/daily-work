@@ -21,7 +21,7 @@ import java.awt.event.ActionEvent;
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
 
-import org.dailywork.bus.Bus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.bus.messages.ui.ChangeUiState;
 import org.dailywork.ui.UiState;
 
@@ -29,7 +29,7 @@ import org.dailywork.ui.UiState;
 public class ToState extends AbstractAction {
 
     @Inject
-    private Bus bus;
+    private EventBus eventBus;
 
     private final Class<? extends UiState> stateClass;
 
@@ -40,7 +40,7 @@ public class ToState extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        bus.publish(new ChangeUiState(stateClass));
+        eventBus.post(new ChangeUiState(stateClass));
     }
 
 }

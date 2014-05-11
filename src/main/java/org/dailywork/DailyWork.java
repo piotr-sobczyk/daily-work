@@ -24,8 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.UIManager;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.ChangeUiState;
 import org.dailywork.bus.messages.ui.TrayClick;
 import org.dailywork.bus.messages.ui.UiStateChanged;
@@ -51,7 +51,7 @@ public class DailyWork implements Runnable {
     @Inject
     private Options options;
     @Inject
-    private Bus bus;
+    private EventBus eventBus;
     @Inject
     private Injector injector;
     @Inject
@@ -75,8 +75,8 @@ public class DailyWork implements Runnable {
 
     @PostConstruct
     public void initialize() {
-        bus.subscribe(new SwitchState(), ChangeUiState.class);
-        bus.subscribe(new ShowWindow(), TrayClick.class);
+        eventBus.register(this);
+        eventBus.register(this);
     }
 
     @Override
@@ -100,35 +100,31 @@ public class DailyWork implements Runnable {
         currentState.afterRendering();
     }
 
-    private class SwitchState implements Subscriber<ChangeUiState> {
-        @Override
-        public void receive(final ChangeUiState message) {
-            invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    Class<? extends UiState> stateClass = message.getStateClass();
-                    render(stateClass);
-                    window.show(null);
-                    bus.publish(new UiStateChanged(currentState));
-                }
-            });
-        }
+    @Subscribe
+    public void switchState(final ChangeUiState message) {
+        invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Class<? extends UiState> stateClass = message.getStateClass();
+                render(stateClass);
+                window.show(null);
+                eventBus.post(new UiStateChanged(currentState));
+            }
+        });
     }
 
-    private class ShowWindow implements Subscriber<TrayClick> {
-        @Override
-        public void receive(final TrayClick message) {
-            invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (options.ui().autoHideWindow() || !window.isVisible()) {
-                        window.show(message.mouseLocation());
-                    } else {
-                        window.setVisible(false);
-                    }
+    @Subscribe
+    public void showWindow(final TrayClick message) {
+        invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (options.ui().autoHideWindow() || !window.isVisible()) {
+                    window.show(message.mouseLocation());
+                } else {
+                    window.setVisible(false);
                 }
-            });
-        }
+            }
+        });
     }
 
 }

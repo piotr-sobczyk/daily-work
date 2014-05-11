@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.general.StateReset;
 import org.dailywork.bus.messages.ui.ChangeUiState;
 import org.dailywork.bus.timer.TimerFinished;
@@ -33,7 +33,7 @@ public class ProjectsManager {
     private PopupMenu popupMenu;
 
     private ProjectsStore projectsStore;
-    private Bus bus;
+    private EventBus eventBus;
 
     private List<Project> projects;
     private Map<Project, ProjectProgress> projectProgresses = new HashMap<>();
@@ -45,15 +45,10 @@ public class ProjectsManager {
         return projectProgresses.get(project);
     }
 
-    @PostConstruct
-    public void initialize() {
-        bus.subscribe(new ResetState(), StateReset.class);
-    }
-
     @Inject
-    public ProjectsManager(ProjectsStore projectsStore, Bus bus) {
+    public ProjectsManager(ProjectsStore projectsStore, EventBus eventBus) {
         this.projectsStore = projectsStore;
-        this.bus = bus;
+        this.eventBus = eventBus;
 
         reloadProjects();
 
@@ -61,8 +56,7 @@ public class ProjectsManager {
             projectProgresses.put(project, createProjectStatus(project));
         }
 
-        bus.subscribe(new FinishProject(), TimerFinished.class);
-        bus.subscribe(new UpdateTime(), TimerTick.class);
+        eventBus.register(this);
     }
 
     private void reloadProjects() {
@@ -83,7 +77,7 @@ public class ProjectsManager {
     }
 
     private ProjectProgress createProjectStatus(Project project) {
-        return new ProjectProgress(project, project.getDailyTimeMins(), bus);
+        return new ProjectProgress(project, project.getDailyTimeMins(), eventBus);
     }
 
 
@@ -107,33 +101,26 @@ public class ProjectsManager {
         return projects;
     }
 
-    private class ResetState implements Subscriber<StateReset> {
+    @Subscribe
+    public void resetState(StateReset message) {
+        for (ProjectProgress projectProgress : projectProgresses.values()) {
+            projectProgress.reset();
+        }
+        timer.pause();
+        eventBus.post(new ChangeUiState(InitialState.class));
+    }
 
-        @Override
-        public void receive(StateReset message) {
-            for (ProjectProgress projectProgress : projectProgresses.values()) {
-                projectProgress.reset();
-            }
-            timer.pause();
-            bus.publish(new ChangeUiState(InitialState.class));
+    @Subscribe
+    public void updateTime(TimerTick tick) {
+        final Time time = tick.getTime();
+        if (currentProjectProgress != null) {
+            currentProjectProgress.updateTime(time);
         }
     }
 
-    private class UpdateTime implements Subscriber<TimerTick> {
-        @Override
-        public void receive(TimerTick tick) {
-            final Time time = tick.getTime();
-            if (currentProjectProgress != null) {
-                currentProjectProgress.updateTime(time);
-            }
-        }
-    }
-
-    private class FinishProject implements Subscriber<TimerFinished> {
-        @Override
-        public void receive(TimerFinished message) {
-            currentProjectProgress.markFinished();
-        }
+    @Subscribe
+    public void finishProject(TimerFinished message) {
+        currentProjectProgress.markFinished();
     }
 
     public void changeProject(Project newProject) {
@@ -143,7 +130,7 @@ public class ProjectsManager {
         updateTimer(currentProjectProgress);
 
         Class<? extends UiState> nextState = currentProjectProgress.isStarted() ? WorkPaused.class : WorkToBeStarted.class;
-        bus.publish(new ChangeUiState(nextState));
+        eventBus.post(new ChangeUiState(nextState));
         window.setProjectName(newProject.getDisplayName());
     }
 

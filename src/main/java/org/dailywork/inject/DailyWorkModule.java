@@ -18,8 +18,7 @@ package org.dailywork.inject;
 
 import static com.google.inject.Scopes.SINGLETON;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.DefaultBus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.config.Configuration;
 import org.dailywork.config.Options;
 import org.dailywork.config.ProjectsStore;
@@ -43,7 +42,7 @@ public class DailyWorkModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(Bus.class).to(DefaultBus.class).in(SINGLETON);
+        bind(EventBus.class).in(SINGLETON);
 
         bind(Timer.class).in(SINGLETON);
         bind(Tray.class).to(AwtTray.class).in(SINGLETON);

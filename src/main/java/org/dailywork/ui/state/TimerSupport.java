@@ -24,7 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JLabel;
 
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.ChangeUiState;
 import org.dailywork.bus.timer.TimerFinished;
 import org.dailywork.bus.timer.TimerTick;
@@ -43,8 +43,6 @@ public abstract class TimerSupport extends UiStateSupport {
     @Inject
     private SoundPlayer soundPlayer;
     private JLabel remainingTime;
-    private UpdateTime updateTime = new UpdateTime();
-    private EndTimer endTimer = new EndTimer();
 
     protected abstract Time initialTime();
 
@@ -52,8 +50,7 @@ public abstract class TimerSupport extends UiStateSupport {
 
     @PostConstruct
     public void initialize() {
-        bus.subscribe(updateTime, TimerTick.class);
-        bus.subscribe(endTimer, TimerFinished.class);
+        eventBus.register(this);
     }
 
     @Override
@@ -79,29 +76,24 @@ public abstract class TimerSupport extends UiStateSupport {
     @Override
     public void beforeDetaching() {
         soundPlayer.stop(sounds.tictac());
-        bus.unsubscribe(updateTime, TimerTick.class);
-        bus.unsubscribe(endTimer, TimerFinished.class);
+        eventBus.unregister(this);
     }
 
-    private class UpdateTime implements Subscriber<TimerTick> {
-        @Override
-        public void receive(TimerTick tick) {
-            final Time time = tick.getTime();
-            invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    remainingTime.setText(time.toString());
-                }
-            });
-        }
+    @Subscribe
+    public void updateTime(TimerTick tick) {
+        final Time time = tick.getTime();
+        invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                remainingTime.setText(time.toString());
+            }
+        });
     }
 
-    private class EndTimer implements Subscriber<TimerFinished> {
-        @Override
-        public void receive(TimerFinished end) {
-            soundPlayer.play(sounds.ding());
-            bus.publish(new ChangeUiState(finishedState()));
-        }
+    @Subscribe
+    public void endTimer(TimerFinished end) {
+        soundPlayer.play(sounds.ding());
+        eventBus.post(new ChangeUiState(finishedState()));
     }
 
 }

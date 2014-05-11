@@ -83,7 +83,7 @@ public class Work extends TimerSupport {
         @Override
         public void actionPerformed(ActionEvent e) {
             timer.pause();
-            bus.publish(new ChangeUiState(WorkPaused.class));
+            eventBus.post(new ChangeUiState(WorkPaused.class));
         }
     }
 

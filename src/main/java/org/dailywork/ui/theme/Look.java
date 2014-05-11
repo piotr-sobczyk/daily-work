@@ -18,25 +18,28 @@ package org.dailywork.ui.theme;
 
 import javax.inject.Inject;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.LookChanged;
 import org.dailywork.bus.messages.ui.UiStateChanged;
 import org.dailywork.config.Options;
 import org.dailywork.ui.UiState;
 import org.dailywork.ui.theme.colors.Gray;
 
-public class Look implements Subscriber<UiStateChanged> {
+public class Look {
 
     @Inject
-    private Bus bus;
-    @Inject
     private Options options;
+
+    private EventBus bus;
+
     private Colors currentColors = defaultColors();
 
     @Inject
-    public Look(Bus bus) {
-        bus.subscribe(this, UiStateChanged.class);
+    public Look(EventBus bus) {
+        this.bus = bus;
+
+        bus.register(this);
     }
 
     public Theme theme() {
@@ -47,8 +50,8 @@ public class Look implements Subscriber<UiStateChanged> {
         return currentColors;
     }
 
-    @Override
-    public void receive(UiStateChanged message) {
+    @Subscribe
+    public void changeUiState(UiStateChanged message) {
         UiState uiState = message.uiState();
         Colors colors = uiState.colors();
         if (colors == null) {
@@ -62,7 +65,7 @@ public class Look implements Subscriber<UiStateChanged> {
             return;
         }
         currentColors = colors;
-        bus.publish(new LookChanged());
+        bus.post(new LookChanged());
     }
 
     private static Colors defaultColors() {

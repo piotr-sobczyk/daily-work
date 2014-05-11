@@ -41,7 +41,7 @@ public class Quartz {
                 .build();
 
         Trigger trigger = newTrigger().withIdentity("resetProjects").
-                withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(0, 0)).build();
+                withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(13, 12)).build();
 
         scheduler.scheduleJob(job, trigger);
         scheduler.start();
