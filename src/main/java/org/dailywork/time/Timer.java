@@ -20,7 +20,7 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-import org.dailywork.bus.Bus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.bus.timer.TimerFinished;
 import org.dailywork.bus.timer.TimerStarted;
 import org.dailywork.bus.timer.TimerTick;
@@ -33,11 +33,11 @@ public class Timer {
     private java.util.Timer timer;
     private boolean isScheduled;
 
-    private final Bus bus;
+    private final EventBus eventBus;
 
     @Inject
-    public Timer(Bus bus) {
-        this.bus = bus;
+    public Timer(EventBus bus) {
+        this.eventBus = bus;
     }
 
     public Time getTime() {
@@ -56,14 +56,14 @@ public class Timer {
         state = new TimerState(initialTime);
         scheduleTimer();
 
-        bus.publish(new TimerStarted(initialTime));
+        eventBus.post(new TimerStarted(initialTime));
     }
 
     private void finish() {
         cancelTimer();
         state.markEnded();
 
-        bus.publish(new TimerFinished());
+        eventBus.post(new TimerFinished());
     }
 
     public void pause() {
@@ -94,10 +94,11 @@ public class Timer {
     private void tick() {
         state.decreaseOneSecond();
 
-        bus.publish(new TimerTick(state.getTime()));
+        eventBus.post(new TimerTick(state.getTime()));
 
-        if (state.getTime().isZero())
+        if (state.getTime().isZero()) {
             finish();
+        }
     }
 
     private class Tick extends TimerTask {

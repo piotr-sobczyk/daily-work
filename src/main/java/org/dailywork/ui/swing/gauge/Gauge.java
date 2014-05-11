@@ -25,8 +25,8 @@ import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.UiStateChanged;
 import org.dailywork.ui.UiState;
 import org.dailywork.ui.state.work.Work;
@@ -35,7 +35,7 @@ import org.dailywork.ui.swing.laf.GaugeButtonUI;
 import org.dailywork.ui.util.Geometry;
 
 @SuppressWarnings("serial")
-public class Gauge extends JPanel implements Subscriber<UiStateChanged> {
+public class Gauge extends JPanel{
 
     private static final int NUMBER_OF_LIGHTS = 4;
     private static final Dimension BUTTON_SIZE = GaugeButtonUI.sizeFor(NUMBER_OF_LIGHTS);
@@ -44,12 +44,12 @@ public class Gauge extends JPanel implements Subscriber<UiStateChanged> {
     private final GaugeButtonModel buttonModel = new GaugeButtonModel(NUMBER_OF_LIGHTS);
 
     @Inject
-    public Gauge(Bus bus) {
+    public Gauge(EventBus eventBus) {
         configureAppearance();
 
         add(createButton());
 
-        bus.subscribe(this, UiStateChanged.class);
+        eventBus.register(this);
     }
 
     private void configureAppearance() {
@@ -75,15 +75,15 @@ public class Gauge extends JPanel implements Subscriber<UiStateChanged> {
         return button;
     }
 
-    @Override
-    public void receive(UiStateChanged message) {
+    @Subscribe
+    public void changeUiState(UiStateChanged message) {
         UiState uiState = message.uiState();
 
-        if (uiState instanceof WorkFinished)
+        if (uiState instanceof WorkFinished) {
             buttonModel.turnNextLightOn();
-
-        else if (uiState instanceof Work)
+        } else if (uiState instanceof Work) {
             turnAllLightsOffIfAllAreOn();
+        }
     }
 
     private void turnAllLightsOffIfAllAreOn() {

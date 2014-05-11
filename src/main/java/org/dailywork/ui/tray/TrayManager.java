@@ -27,8 +27,8 @@ import java.awt.event.MouseEvent;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.dailywork.bus.Bus;
-import org.dailywork.bus.Subscriber;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.config.TimeOnTrayConfigChanged;
 import org.dailywork.bus.messages.ui.TrayClick;
 import org.dailywork.bus.timer.TimerStopped;
@@ -46,7 +46,7 @@ public class TrayManager implements Runnable {
     @Inject
     private Options options;
     @Inject
-    private Bus bus;
+    private EventBus eventBus;
     @Inject
     private Messages messages;
     @Inject
@@ -55,9 +55,8 @@ public class TrayManager implements Runnable {
 
     @PostConstruct
     public void initialize() {
-        bus.subscribe(new UpdateTimeOnTray(), TimerTick.class);
-        bus.subscribe(new ShowTomatoIconWhenTimerStops(), TimerStopped.class);
-        bus.subscribe(new RemoveTimeFromTray(), TimeOnTrayConfigChanged.class);
+        eventBus.register(this);
+
         trayIcon = new TrayIcon(icons.tomato());
         trayIcon.addMouseListener(new TrayListener());
         trayIcon.setImageAutoSize(true);
@@ -92,35 +91,29 @@ public class TrayManager implements Runnable {
     private class TrayListener extends MouseAdapter {
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
-            bus.publish(new TrayClick(mouseEvent.getLocationOnScreen()));
+            eventBus.post(new TrayClick(mouseEvent.getLocationOnScreen()));
         }
     }
 
-    private class UpdateTimeOnTray implements Subscriber<TimerTick> {
-        @Override
-        public void receive(TimerTick tick) {
+        @Subscribe
+        public void updateTimeOnTray(TimerTick tick) {
             if (options.ui().showTimeOnTray()) {
                 Time time = tick.getTime();
                 Image image = icons.time(time);
                 trayIcon.setImage(image);
             }
         }
-    }
 
-    private class RemoveTimeFromTray implements Subscriber<TimeOnTrayConfigChanged> {
-        @Override
-        public void receive(TimeOnTrayConfigChanged configuration) {
+        @Subscribe
+        public void removeTimeFromTray(TimeOnTrayConfigChanged configuration) {
             if (!configuration.shouldShowTimeOnTray()) {
                 showTomatoIcon();
             }
         }
-    }
 
-    private class ShowTomatoIconWhenTimerStops implements Subscriber<TimerStopped> {
-        @Override
-        public void receive(TimerStopped end) {
+        @Subscribe
+        public void showTomatoIconWhenTimerStops(TimerStopped end) {
             showTomatoIcon();
         }
-    }
 
 }

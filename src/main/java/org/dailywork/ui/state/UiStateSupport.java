@@ -30,7 +30,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.dailywork.bus.Bus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.i18n.Messages;
 import org.dailywork.ui.UiState;
 import org.dailywork.ui.swing.gauge.Gauge;
@@ -53,7 +53,7 @@ public abstract class UiStateSupport implements UiState {
     @Inject
     protected SexyLabel labelFactory;
     @Inject
-    protected Bus bus;
+    protected EventBus eventBus;
     @Inject
     protected Messages messages;
 

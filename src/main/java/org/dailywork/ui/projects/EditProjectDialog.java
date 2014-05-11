@@ -76,8 +76,8 @@ class EditProjectDialog extends JDialog {
         add(dailyTimeSpinner, "alignx left, wrap 10");
 
         errorMsgLabel = new JLabel();
-        Image errorIcon = resources.image("/error.png");
-        errorMsgLabel.setIcon(new ImageIcon(errorIcon));
+        //Image errorIcon = resources.image("/error.png");
+        //errorMsgLabel.setIcon(new ImageIcon(errorIcon));
         errorMsgLabel.setVisible(false);
 
         add(errorMsgLabel, "span 2, wrap 10");

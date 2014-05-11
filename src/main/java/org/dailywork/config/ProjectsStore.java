@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import org.dailywork.bus.Bus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.projects.Project;
 
 import com.db4o.Db4oEmbedded;
@@ -16,7 +16,7 @@ public class ProjectsStore {
     @Inject
     private Directories directories;
     @Inject
-    private Bus bus;
+    private EventBus eventBus;
 
     private ObjectContainer database;
 
@@ -27,13 +27,11 @@ public class ProjectsStore {
 
     @PreDestroy
     public void destroy(){
-        System.out.println("destroying...");
         database.close();
     }
 
     public List<Project> loadProjects() {
-        List<Project> queryResult = database.query(Project.class);
-        return queryResult;
+        return database.query(Project.class);
     }
 
     public void saveProject(Project project) {

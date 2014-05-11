@@ -20,7 +20,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import org.dailywork.bus.Bus;
+import com.google.common.eventbus.EventBus;
 import org.dailywork.bus.messages.config.TimeOnTrayConfigChanged;
 import org.dailywork.bus.messages.ui.LookChanged;
 import org.dailywork.ui.theme.Theme;
@@ -41,7 +41,7 @@ public class Options {
     @Inject
     private Configuration config;
     @Inject
-    private Bus bus;
+    private EventBus bus;
 
     private UserInterfaceOptions ui = new UserInterfaceOptions();
     private SoundOptions sound = new SoundOptions();
@@ -96,7 +96,7 @@ public class Options {
             Class<? extends Theme> currentClass = config.asClass(UI_THEME, BrushedMetal.class);
             if (!clazz.equals(currentClass)) {
                 config.set(UI_THEME, clazz);
-                bus.publish(new LookChanged());
+                bus.post(new LookChanged());
             }
         }
 
@@ -107,7 +107,7 @@ public class Options {
         public void showTimeOnTray(boolean show) {
             if (show != showTimeOnTray()) {
                 config.set(UI_SHOW_TIME_ON_TRAY, show);
-                bus.publish(new TimeOnTrayConfigChanged(show));
+                bus.post(new TimeOnTrayConfigChanged(show));
             }
         }
 

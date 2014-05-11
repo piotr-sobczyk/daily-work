@@ -55,7 +55,7 @@ public class WorkPaused extends UiStateSupport {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            bus.publish(new ChangeUiState(Work.class));
+            eventBus.post(new ChangeUiState(Work.class));
         }
     }
 
