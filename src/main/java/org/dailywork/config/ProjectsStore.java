@@ -1,16 +1,17 @@
 package org.dailywork.config;
 
+import java.io.File;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import com.google.common.eventbus.EventBus;
 import org.dailywork.projects.Project;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
+import com.google.common.eventbus.EventBus;
 
 public class ProjectsStore {
     @Inject
@@ -22,7 +23,8 @@ public class ProjectsStore {
 
     @PostConstruct
     public void init(){
-        database =  Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), "test.db");
+        File databaseFile = new File(directories.configuration(), "database.db");
+        database = Db4oEmbedded.openFile(databaseFile.getAbsolutePath());
     }
 
     @PreDestroy
