@@ -83,11 +83,8 @@ public abstract class TimerSupport extends UiStateSupport {
     @Subscribe
     public void updateTime(TimerTick tick) {
         final Time time = tick.getTime();
-        invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                remainingTime.setText(time.toString());
-            }
+        invokeLater(() -> {
+            remainingTime.setText(time.toString());
         });
     }
 

@@ -19,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -49,6 +50,7 @@ public class ProjectsDialog extends JDialog {
     private JButton addButton;
     private JButton editButton;
     private JButton removeButton;
+    private JButton okButton;
 
     private void reloadProjects() {
         projectsListModel.clear();
@@ -61,7 +63,7 @@ public class ProjectsDialog extends JDialog {
 
     @PostConstruct
     public void initialize() {
-        setSize(new Dimension(280, 180));
+        setSize(new Dimension(280, 200));
         setResizable(false);
         setTitle("Projects");
 
@@ -89,14 +91,16 @@ public class ProjectsDialog extends JDialog {
     }
 
     private void addComponents() {
-        setLayout(new MigLayout("fill, insets 10", "[grow]10[30,fill]"));
-
+        setLayout(new MigLayout("fill, insets 10", "[grow]10[30,fill]","[]8[]"));
         JScrollPane projectsListScrollPane = new JScrollPane(projectsList);
 
-        add(projectsListScrollPane, "spany, grow");
+        add(projectsListScrollPane, "spany 3, grow");
         add(addButton, "top, wrap push");
         add(editButton, "wrap");
-        add(removeButton);
+        add(removeButton, "wrap");
+        add(new JSeparator(), "span 2, growx, wrap 3");
+        okButton = new JButton("Ok");
+        add(okButton);
     }
 
     private boolean confirmProjectDeletion(Project selectedProject) {
@@ -151,13 +155,14 @@ public class ProjectsDialog extends JDialog {
             }
         });
 
-        ActionListener escListener = new ActionListener() {
+        ActionListener windowClosingListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
             }
         };
-        getRootPane().registerKeyboardAction(escListener,
+        okButton.addActionListener(windowClosingListener);
+        getRootPane().registerKeyboardAction(windowClosingListener,
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
 
