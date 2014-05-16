@@ -38,11 +38,6 @@ public class WorkFinished extends UiStateSupport {
     }
 
     @Override
-    protected boolean displaysGauge() {
-        return false;
-    }
-
-    @Override
     protected Component createContent() {
         Image image = images.tomato();
         ImageIcon imageIcon = new ImageIcon(image);

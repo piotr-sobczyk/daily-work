@@ -46,6 +46,7 @@ public class SexyArrowButtonUI extends BasicButtonUI {
         JButton button = (JButton) component;
 
         Dimension dimension = new Dimension(17, 16);
+        button.setMinimumSize(dimension);
         button.setSize(dimension);
         button.setPreferredSize(dimension);
 

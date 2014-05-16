@@ -16,13 +16,13 @@
 
 package org.dailywork.ui;
 
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.LINE_END;
-import static java.awt.BorderLayout.NORTH;
 import static org.dailywork.ui.util.Geometry.offset;
 import static org.dailywork.ui.util.Geometry.opposite;
 
+import net.miginfocom.swing.MigLayout;
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -36,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import org.dailywork.config.Options;
 import org.dailywork.resources.Images;
@@ -82,7 +83,7 @@ public class Window extends JFrame {
     }
 
     private JPanel createPanel() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new MigLayout());
         mainPanel.setUI(panelUI);
 
         viewport = new JPanel(new BorderLayout());
@@ -90,16 +91,21 @@ public class Window extends JFrame {
 
         JButton menuButton = menuButtonFactory.create();
 
-        JPanel topBar = new JPanel(new BorderLayout());
+        JPanel topBar = new JPanel(new MigLayout());
         topBar.setOpaque(false);
         projectLabel = labelFactory.medium();
         projectLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        topBar.add(projectLabel, CENTER);
-        topBar.add(menuButton, LINE_END);
+        topBar.add(projectLabel, "dock center");
+        topBar.add(menuButton, "dock east");
 
-        mainPanel.add(topBar, NORTH);
-        mainPanel.add(viewport, CENTER);
+        mainPanel.add(topBar, "dock north");
+
+        JSeparator separator = new JSeparator();
+        separator.setBackground(new Color(15, 15, 15));
+        mainPanel.add(separator, "dock north");
+
+        mainPanel.add(viewport, "dock center");
 
         return mainPanel;
     }

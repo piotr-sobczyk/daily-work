@@ -16,11 +16,8 @@
 
 package org.dailywork.ui.state;
 
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
+import net.miginfocom.swing.MigLayout;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -30,15 +27,14 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.google.common.eventbus.EventBus;
 import org.dailywork.i18n.Messages;
 import org.dailywork.ui.UiState;
-import org.dailywork.ui.swing.gauge.Gauge;
 import org.dailywork.ui.swing.laf.SexyArrowButtonUI;
 import org.dailywork.ui.swing.laf.SexyButtonUI;
 import org.dailywork.ui.swing.laf.SexyLabel;
 import org.dailywork.ui.theme.Colors;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 
 public abstract class UiStateSupport implements UiState {
@@ -47,8 +43,6 @@ public abstract class UiStateSupport implements UiState {
     private Injector injector;
     @Inject
     private SexyArrowButtonUI arrowButtonUI;
-    @Inject
-    private Gauge gauge;
 
     @Inject
     protected SexyLabel labelFactory;
@@ -64,10 +58,6 @@ public abstract class UiStateSupport implements UiState {
     protected abstract Action[] primaryActions();
 
     protected abstract Action[] secondaryActions();
-
-    protected boolean displaysGauge() {
-        return false;
-    }
 
     @Override
     public final Component render() throws Exception {
@@ -88,21 +78,24 @@ public abstract class UiStateSupport implements UiState {
     }
 
     private JPanel createComponent() {
-        JPanel component = createPanel();
-        component.add(createHeader(), NORTH);
-        component.add(createContent(), CENTER);
-        component.add(createButtons(), SOUTH);
+        JPanel component = createPanel(new MigLayout());
+        component.add(createHeader(), "dock north");
+
+        Component content = createContent();
+        if (content == null) {
+            content = createPanel(new MigLayout());
+        }
+        component.add(content, "dock center");
+
+        component.add(createButtons(), "dock south");
         return component;
     }
 
     private JPanel createHeader() {
-        JPanel panel = createPanel(new BorderLayout(0, 3));
+        JPanel panel = createPanel(new MigLayout("insets 3"));
         String title = title();
         if (title != null) {
-            panel.add(labelFactory.small(title), CENTER);
-        }
-        if (displaysGauge()) {
-            panel.add(gauge, SOUTH);
+            panel.add(labelFactory.small(title), "dock center");
         }
         return panel;
     }
@@ -118,10 +111,6 @@ public abstract class UiStateSupport implements UiState {
             buttons.add(button);
         }
         return buttons;
-    }
-
-    private JPanel createPanel() {
-        return createPanel(new BorderLayout());
     }
 
     private static JPanel createPanel(LayoutManager layout) {

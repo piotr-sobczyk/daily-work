@@ -16,7 +16,6 @@
 
 package org.dailywork.ui.swing.laf;
 
-import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +25,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.plaf.basic.BasicPanelUI;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.LookChanged;
 import org.dailywork.ui.theme.Look;
 import org.dailywork.ui.theme.Theme;
 import org.dailywork.ui.util.Canvas;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 public class SexyPanelUI extends BasicPanelUI {
 
@@ -54,7 +54,6 @@ public class SexyPanelUI extends BasicPanelUI {
     @Override
     public void installUI(JComponent c) {
         super.installUI(c);
-        c.setLayout(new BorderLayout());
         c.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
         installedComponents.add(c);
     }

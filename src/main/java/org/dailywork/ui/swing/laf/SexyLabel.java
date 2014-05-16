@@ -43,7 +43,7 @@ public class SexyLabel {
     }
 
     public JLabel big(String text) {
-        return create(38f, text);
+        return create(36f, text);
     }
 
     public JLabel create(float size, String text) {

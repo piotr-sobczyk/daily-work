@@ -24,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JLabel;
 
-import com.google.common.eventbus.Subscribe;
 import org.dailywork.bus.messages.ui.ChangeUiState;
 import org.dailywork.bus.timer.TimerFinished;
 import org.dailywork.bus.timer.TimerTick;
@@ -33,6 +32,8 @@ import org.dailywork.sound.Sounds;
 import org.dailywork.time.Time;
 import org.dailywork.time.Timer;
 import org.dailywork.ui.UiState;
+
+import com.google.common.eventbus.Subscribe;
 
 public abstract class TimerSupport extends UiStateSupport {
 

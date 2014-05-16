@@ -1,23 +1,15 @@
 package org.dailywork.ui.state.work;
 
 import java.awt.Component;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 
-import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 import org.dailywork.bus.messages.ui.ChangeUiState;
-import org.dailywork.resources.Images;
 import org.dailywork.ui.state.UiStateSupport;
 
 public class WorkToBeStarted extends UiStateSupport {
-
-    @Inject
-    private Images images;
 
     @Override
     protected String title() {
@@ -26,9 +18,7 @@ public class WorkToBeStarted extends UiStateSupport {
 
     @Override
     protected Component createContent() {
-        Image image = images.tomato();
-        ImageIcon imageIcon = new ImageIcon(image);
-        return new JLabel(imageIcon);
+        return null;
     }
 
     @Override
